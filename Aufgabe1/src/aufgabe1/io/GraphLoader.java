@@ -1,7 +1,10 @@
 package aufgabe1.io;
 
-import org.jgraph.graph.DefaultEdge;
 import org.jgrapht.Graph;
+import org.jgrapht.WeightedGraph;
+import org.jgrapht.graph.DefaultDirectedWeightedGraph;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.SimpleWeightedGraph;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,29 +17,73 @@ import java.util.List;
  * Created by flbaue on 20.10.14.
  */
 class GraphLoader {
-    public Graph<String, DefaultEdge> fromFile(File path) {
-        List<String> lines = convertFileToListOfStrings(path);
+
+    public Graph<String, DefaultWeightedEdge> fromFile(final File path) {
+        final List<FileEntry> lines = convertFileToListOfFileEntrys(path);
         return convertListOfStringsToGraph(lines);
     }
 
-    private Graph<String, DefaultEdge> convertListOfStringsToGraph(List<String> lines) {
-        //TODO
-        return null;
+    private Graph<String, DefaultWeightedEdge> convertListOfStringsToGraph(final List<FileEntry> lines) {
+        if (graphIsDirected(lines)) {
+            return createDirectedGraph(lines);
+        } else {
+            return createUndirectedGraph(lines);
+        }
     }
 
-    private List<String> convertFileToListOfStrings(File path) {
-        List<String> lines = new LinkedList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+    private Graph<String, DefaultWeightedEdge> createUndirectedGraph(List<FileEntry> lines) {
+        SimpleWeightedGraph<String, DefaultWeightedEdge> graph = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
+        addNodesToGraph(graph, lines);
+        addEdgesToGraph(graph, lines);
+
+        return graph;
+    }
+
+    private Graph<String, DefaultWeightedEdge> createDirectedGraph(List<FileEntry> lines) {
+        DefaultDirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+        addNodesToGraph(graph, lines);
+        addEdgesToGraph(graph, lines);
+
+        return graph;
+    }
+
+    private void addEdgesToGraph(WeightedGraph<String, DefaultWeightedEdge> graph, List<FileEntry> lines) {
+        for (FileEntry entry : lines) {
+            if (entry.node2Name != null) {
+                DefaultWeightedEdge edge = graph.addEdge(entry.node1Name, entry.node2Name);
+                if (entry.weight != 0) {
+                    graph.setEdgeWeight(edge, (double) entry.weight);
+                }
+            }
+        }
+    }
+
+    private void addNodesToGraph(Graph<String, DefaultWeightedEdge> graph, List<FileEntry> lines) {
+        for (FileEntry entry : lines) {
+            graph.addVertex(entry.node1Name);
+            if (entry.node2Name != null) {
+                graph.addVertex(entry.node2Name);
+            }
+        }
+    }
+
+    private boolean graphIsDirected(final List<FileEntry> lines) {
+        //TODO validation that all file entries are actually the same
+        return lines.get(0).isDirected;
+    }
+
+    private List<FileEntry> convertFileToListOfFileEntrys(final File path) {
+        final List<FileEntry> lines = new LinkedList<>();
+        try (final BufferedReader reader = new BufferedReader(new FileReader(path))) {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                lines.add(line);
+                lines.add(new FileEntry(line));
             }
 
         } catch (IOException e) {
-            throw new RuntimeException("Cannot read from file", e);
+            throw new RuntimeException("Cannot read file", e);
         }
-
         return lines;
     }
 }
