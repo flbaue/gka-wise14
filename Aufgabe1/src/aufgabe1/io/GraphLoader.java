@@ -1,10 +1,11 @@
 package aufgabe1.io;
 
+import aufgabe1.Vertex;
 import org.jgrapht.Graph;
 import org.jgrapht.WeightedGraph;
-import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleWeightedGraph;
+import org.jgrapht.graph.DirectedWeightedMultigraph;
+import org.jgrapht.graph.WeightedMultigraph;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,12 +19,12 @@ import java.util.List;
  */
 class GraphLoader {
 
-    public Graph<String, DefaultWeightedEdge> fromFile(final File path) {
+    public Graph<Vertex, DefaultWeightedEdge> fromFile(final File path) {
         final List<FileEntry> lines = convertFileToListOfFileEntrys(path);
         return convertListOfStringsToGraph(lines);
     }
 
-    private Graph<String, DefaultWeightedEdge> convertListOfStringsToGraph(final List<FileEntry> lines) {
+    private Graph<Vertex, DefaultWeightedEdge> convertListOfStringsToGraph(final List<FileEntry> lines) {
         if (graphIsDirected(lines)) {
             return createDirectedGraph(lines);
         } else {
@@ -31,26 +32,28 @@ class GraphLoader {
         }
     }
 
-    private Graph<String, DefaultWeightedEdge> createUndirectedGraph(List<FileEntry> lines) {
-        SimpleWeightedGraph<String, DefaultWeightedEdge> graph = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
+    private Graph<Vertex, DefaultWeightedEdge> createUndirectedGraph(List<FileEntry> lines) {
+        WeightedMultigraph<Vertex, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         addNodesToGraph(graph, lines);
         addEdgesToGraph(graph, lines);
 
         return graph;
     }
 
-    private Graph<String, DefaultWeightedEdge> createDirectedGraph(List<FileEntry> lines) {
-        DefaultDirectedWeightedGraph<String, DefaultWeightedEdge> graph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+    private Graph<Vertex, DefaultWeightedEdge> createDirectedGraph(List<FileEntry> lines) {
+        DirectedWeightedMultigraph<Vertex, DefaultWeightedEdge> graph = new DirectedWeightedMultigraph<>(DefaultWeightedEdge.class);
         addNodesToGraph(graph, lines);
         addEdgesToGraph(graph, lines);
 
         return graph;
     }
 
-    private void addEdgesToGraph(WeightedGraph<String, DefaultWeightedEdge> graph, List<FileEntry> lines) {
+    private void addEdgesToGraph(WeightedGraph<Vertex, DefaultWeightedEdge> graph, List<FileEntry> lines) {
         for (FileEntry entry : lines) {
             if (entry.getNode2Name() != null) {
-                DefaultWeightedEdge edge = graph.addEdge(entry.getNode1Name(), entry.getNode2Name());
+                Vertex vertex1 = new Vertex(entry.getNode1Name());
+                Vertex vertex2 = new Vertex(entry.getNode2Name());
+                DefaultWeightedEdge edge = graph.addEdge(vertex1, vertex2);
                 if (entry.getWeight() != 0) {
                     graph.setEdgeWeight(edge, (double) entry.getWeight());
                 }
@@ -58,18 +61,18 @@ class GraphLoader {
         }
     }
 
-    private void addNodesToGraph(Graph<String, DefaultWeightedEdge> graph, List<FileEntry> lines) {
+    private void addNodesToGraph(Graph<Vertex, DefaultWeightedEdge> graph, List<FileEntry> lines) {
         for (FileEntry entry : lines) {
-            graph.addVertex(entry.getNode1Name());
+            graph.addVertex(new Vertex(entry.getNode1Name()));
             if (entry.getNode2Name() != null) {
-                graph.addVertex(entry.getNode2Name());
+                graph.addVertex(new Vertex(entry.getNode2Name()));
             }
         }
     }
 
     private boolean graphIsDirected(final List<FileEntry> lines) {
-        for (FileEntry entry : lines){
-            if(!entry.isDirected()){
+        for (FileEntry entry : lines) {
+            if (!entry.isDirected()) {
                 return false;
             }
         }

@@ -32,6 +32,14 @@ public class FileEntry {
         parseLine(line);
     }
 
+    public FileEntry(String node1Name, String node2Name, boolean isDirected, String edgeName, int weight) {
+        this.node1Name = node1Name;
+        this.node2Name = node2Name;
+        this.isDirected = isDirected;
+        this.edgeName = edgeName;
+        this.weight = weight;
+    }
+
     private void parseLine(final String line) {
         if (line.contains(DIRECTED)) {
             isDirected = true;

@@ -1,5 +1,6 @@
 package aufgabe1.io;
 
+import aufgabe1.Vertex;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -13,14 +14,14 @@ public class GraphIO {
     GraphLoader loader = new GraphLoader();
     GraphSaver saver = new GraphSaver();
 
-    public Graph<String, DefaultWeightedEdge> readGraphFromFile(File path) {
+    public Graph<Vertex, DefaultWeightedEdge> readGraphFromFile(File path) {
         if (path.exists() && path.isFile()) {
             return loader.fromFile(path);
         }
         throw new IllegalArgumentException("file does not exist");
     }
 
-    public void saveGraphAsFile(Graph<String, DefaultWeightedEdge> graph, File path) {
+    public void saveGraphAsFile(Graph<Vertex, DefaultWeightedEdge> graph, File path) {
         if (path.isDirectory()) {
             throw new IllegalArgumentException("path is not a file");
         }
