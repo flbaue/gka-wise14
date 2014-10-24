@@ -3,6 +3,7 @@ package aufgabe1.io;
 import aufgabe1.Vertex;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.DirectedWeightedPseudograph;
 import org.junit.Test;
 
 import java.io.File;
@@ -22,6 +23,7 @@ public class GraphIOTest {
 
         assertEquals(2, graph.edgeSet().size());
         assertEquals(3, graph.vertexSet().size());
+        assertTrue(graph instanceof DirectedWeightedPseudograph);
     }
 
     @Test

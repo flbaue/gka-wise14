@@ -3,7 +3,9 @@ package aufgabe1.io;
 import aufgabe1.Vertex;
 import org.jgrapht.Graph;
 import org.jgrapht.WeightedGraph;
-import org.jgrapht.graph.*;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.DirectedWeightedPseudograph;
+import org.jgrapht.graph.WeightedPseudograph;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -69,13 +71,31 @@ class GraphLoader {
     }
 
     private boolean graphIsDirected(final List<FileEntry> lines) {
-        for (FileEntry entry : lines) {
-            if (!entry.isDirected()) {
-                return false;
+        if (lines.get(0).isDirected()) {
+            validateAllNodesDirected(lines);
+            return true;
+        } else {
+            validateAllNodesUndirected(lines);
+            return false;
+        }
+    }
+
+    private void validateAllNodesUndirected(List<FileEntry> lines) {
+        for (FileEntry e : lines) {
+            if (e.getNode2Name() != null && !e.getNode2Name().isEmpty() && e.isDirected()) {
+                throw new IllegalArgumentException("entry must not be directed: " + e.toString());
             }
         }
-        return true;
     }
+
+    private void validateAllNodesDirected(List<FileEntry> lines) {
+        for (FileEntry e : lines) {
+            if (e.getNode2Name() != null && !e.getNode2Name().isEmpty() && !e.isDirected()) {
+                throw new IllegalArgumentException("entry must be directed: " + e.toString());
+            }
+        }
+    }
+
 
     private List<FileEntry> convertFileToListOfFileEntrys(final File path) {
         final List<FileEntry> lines = new LinkedList<>();

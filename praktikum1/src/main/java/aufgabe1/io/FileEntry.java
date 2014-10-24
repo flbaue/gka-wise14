@@ -28,7 +28,6 @@ public class FileEntry {
     public FileEntry(String line) {
         line = removeWhiteSpaces(line);
         Matcher matcher = ENTRY_PATTERN.matcher(line);
-        System.out.println("Regex: " + ENTRY);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("Line '" + line + "' is not valid");
         }
@@ -48,7 +47,9 @@ public class FileEntry {
     }
 
     private void parseLine(final String line) {
-        if (line.contains(DIRECTED)) {
+        Pattern directedPattern = Pattern.compile(DIRECTED);
+        Matcher directedMatcher = directedPattern.matcher(line);
+        if(directedMatcher.find()){
             isDirected = true;
         } else {
             isDirected = false;
@@ -67,9 +68,7 @@ public class FileEntry {
         if (node2Matcher.find()) {
             String node2Temp = node2Matcher.group();
             Matcher node2NameMatcher = namePattern.matcher(node2Temp);
-            boolean r = node2NameMatcher.find();
-            if (!r)
-                System.out.println("bääm");
+            node2NameMatcher.find();
             node2Name = node2NameMatcher.group();
             lineEdited = lineEdited.substring(node2NameMatcher.end());
         }
