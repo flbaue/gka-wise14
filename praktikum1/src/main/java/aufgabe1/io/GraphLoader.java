@@ -3,9 +3,7 @@ package aufgabe1.io;
 import aufgabe1.Vertex;
 import org.jgrapht.Graph;
 import org.jgrapht.WeightedGraph;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.DirectedWeightedMultigraph;
-import org.jgrapht.graph.WeightedMultigraph;
+import org.jgrapht.graph.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,7 +31,7 @@ class GraphLoader {
     }
 
     private Graph<Vertex, DefaultWeightedEdge> createUndirectedGraph(List<FileEntry> lines) {
-        WeightedMultigraph<Vertex, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        WeightedPseudograph<Vertex, DefaultWeightedEdge> graph = new WeightedPseudograph<>(DefaultWeightedEdge.class);
         addNodesToGraph(graph, lines);
         addEdgesToGraph(graph, lines);
 
@@ -41,7 +39,7 @@ class GraphLoader {
     }
 
     private Graph<Vertex, DefaultWeightedEdge> createDirectedGraph(List<FileEntry> lines) {
-        DirectedWeightedMultigraph<Vertex, DefaultWeightedEdge> graph = new DirectedWeightedMultigraph<>(DefaultWeightedEdge.class);
+        DirectedWeightedPseudograph<Vertex, DefaultWeightedEdge> graph = new DirectedWeightedPseudograph<>(DefaultWeightedEdge.class);
         addNodesToGraph(graph, lines);
         addEdgesToGraph(graph, lines);
 

@@ -9,13 +9,14 @@ import java.util.regex.Pattern;
 public class FileEntry {
 
     static final String NAME = "\\w+";
+    static final String NUMBER = "\\d+";
     static final String NODE = NAME;
-    static final String EDGE = "(" + NAME + ")?";
-    static final String DIRECTED = "\\x3D\\x3E";
-    static final String UNDIRECTED = "\\x3D\\x3D";
-    static final String NODE2 = "((" + UNDIRECTED + ")|(" + DIRECTED + ")" + NAME + ")?";
-    static final String WEIGHT = "(:\\d+)?";
-    static final String ENTRY = NODE + NODE2 + EDGE + WEIGHT + ";";
+    static final String EDGE = NAME;
+    static final String DIRECTED = "\\x2D\\x3E";
+    static final String UNDIRECTED = "\\x2D\\x2D";
+    static final String NODE2 = "(" + UNDIRECTED + ")|(" + DIRECTED + ")" + NAME;
+    static final String WEIGHT = NUMBER;
+    static final String ENTRY = NODE + "(" + NODE2 + ")?" + "(" + EDGE + ")?" + "(:" + WEIGHT + ")?" + ";";
     static final Pattern ENTRY_PATTERN = Pattern.compile(ENTRY);
 
     private String node1Name;
@@ -25,11 +26,17 @@ public class FileEntry {
     private int weight;
 
     public FileEntry(String line) {
+        line = removeWhiteSpaces(line);
         Matcher matcher = ENTRY_PATTERN.matcher(line);
+        System.out.println("Regex: " + ENTRY);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("Line '" + line + "' is not valid");
         }
         parseLine(line);
+    }
+
+    private String removeWhiteSpaces(String line) {
+        return line.replaceAll(" ", "");
     }
 
     public FileEntry(String node1Name, String node2Name, boolean isDirected, String edgeName, int weight) {
@@ -60,7 +67,9 @@ public class FileEntry {
         if (node2Matcher.find()) {
             String node2Temp = node2Matcher.group();
             Matcher node2NameMatcher = namePattern.matcher(node2Temp);
-            node2NameMatcher.find();
+            boolean r = node2NameMatcher.find();
+            if (!r)
+                System.out.println("bääm");
             node2Name = node2NameMatcher.group();
             lineEdited = lineEdited.substring(node2NameMatcher.end());
         }
@@ -74,7 +83,7 @@ public class FileEntry {
         Pattern weightPattern = Pattern.compile(WEIGHT);
         Matcher weightMatcher = weightPattern.matcher(lineEdited);
         if (weightMatcher.find()) {
-            String temp = weightMatcher.group().substring(lineEdited.indexOf(":") + 1);
+            String temp = weightMatcher.group();
             weight = Integer.parseInt(temp);
         }
     }

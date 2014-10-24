@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>haw.gka.wise14</groupId>
-    <artifactId>praktiukum1</artifactId>
+    <artifactId>praktikum1</artifactId>
     <version>1.0-SNAPSHOT</version>
     <build>
         <plugins>
