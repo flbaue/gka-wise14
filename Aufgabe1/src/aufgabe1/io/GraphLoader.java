@@ -49,10 +49,10 @@ class GraphLoader {
 
     private void addEdgesToGraph(WeightedGraph<String, DefaultWeightedEdge> graph, List<FileEntry> lines) {
         for (FileEntry entry : lines) {
-            if (entry.node2Name != null) {
-                DefaultWeightedEdge edge = graph.addEdge(entry.node1Name, entry.node2Name);
-                if (entry.weight != 0) {
-                    graph.setEdgeWeight(edge, (double) entry.weight);
+            if (entry.getNode2Name() != null) {
+                DefaultWeightedEdge edge = graph.addEdge(entry.getNode1Name(), entry.getNode2Name());
+                if (entry.getWeight() != 0) {
+                    graph.setEdgeWeight(edge, (double) entry.getWeight());
                 }
             }
         }
@@ -60,9 +60,9 @@ class GraphLoader {
 
     private void addNodesToGraph(Graph<String, DefaultWeightedEdge> graph, List<FileEntry> lines) {
         for (FileEntry entry : lines) {
-            graph.addVertex(entry.node1Name);
-            if (entry.node2Name != null) {
-                graph.addVertex(entry.node2Name);
+            graph.addVertex(entry.getNode1Name());
+            if (entry.getNode2Name() != null) {
+                graph.addVertex(entry.getNode2Name());
             }
         }
     }
