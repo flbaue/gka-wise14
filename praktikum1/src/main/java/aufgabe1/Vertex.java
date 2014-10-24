@@ -1,9 +1,11 @@
 package aufgabe1;
 
+import java.io.Serializable;
+
 /**
  * Created by flbaue on 24.10.14.
  */
-public class Vertex {
+public class Vertex implements Serializable {
 
     private final String name;
     private Marker marker;
