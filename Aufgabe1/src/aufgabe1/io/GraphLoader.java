@@ -68,8 +68,12 @@ class GraphLoader {
     }
 
     private boolean graphIsDirected(final List<FileEntry> lines) {
-        //TODO validation that all file entries are actually the same
-        return lines.get(0).isDirected;
+        for (FileEntry entry : lines){
+            if(!entry.isDirected()){
+                return false;
+            }
+        }
+        return true;
     }
 
     private List<FileEntry> convertFileToListOfFileEntrys(final File path) {
