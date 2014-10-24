@@ -18,7 +18,7 @@ final class ListenableGraphFactory {
     private ListenableGraphFactory() {
     }
 
-    public static ListenableGraph<? extends Vertex, ? extends DefaultEdge> createFromGraph(Graph<? extends Vertex, ? extends DefaultEdge> graph) {
-        return GraphUtils.isDirectedGraph(graph) ? new ListenableDirectedGraph((DirectedGraph) graph) : new ListenableUndirectedWeightedGraph((WeightedGraph) graph);
+    public static <V extends Vertex, E extends DefaultEdge> ListenableGraph<V, E> createFromGraph(Graph<V, E> graph) {
+        return GraphUtils.isDirectedGraph(graph) ? new ListenableDirectedGraph<V, E>((DirectedGraph<V, E>) graph) : new ListenableUndirectedWeightedGraph<V, E>((WeightedGraph<V, E>) graph);
     }
 }
