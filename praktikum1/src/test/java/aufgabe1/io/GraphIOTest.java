@@ -9,7 +9,8 @@ import org.junit.Test;
 import java.io.File;
 import java.net.URL;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class GraphIOTest {
 
@@ -28,6 +29,26 @@ public class GraphIOTest {
 
     @Test
     public void testSaveGraphAsFile() throws Exception {
+        DirectedWeightedPseudograph<Vertex, DefaultWeightedEdge> graph = new DirectedWeightedPseudograph(DefaultWeightedEdge.class);
 
+        Vertex a = new Vertex("A");
+        Vertex b = new Vertex("B");
+        Vertex c = new Vertex("C");
+
+        graph.addVertex(a);
+        graph.addVertex(b);
+        graph.addVertex(c);
+
+        DefaultWeightedEdge e;
+        e = graph.addEdge(a, b);
+        graph.setEdgeWeight(e, 2);
+        graph.addEdge(b, c);
+        graph.addEdge(c, c);
+        graph.addEdge(a, c);
+        graph.addEdge(c, a);
+
+        File file = new File("graph.txt");
+        GraphIO graphIO = new GraphIO();
+        graphIO.saveGraphAsFile(graph, file);
     }
 }

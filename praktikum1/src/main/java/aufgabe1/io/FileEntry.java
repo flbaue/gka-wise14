@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Created by flbaue on 21.10.14.
  */
-public class FileEntry {
+class FileEntry {
 
     static final String NAME = "\\w+";
     static final String NUMBER = "\\d+";
