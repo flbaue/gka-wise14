@@ -47,6 +47,11 @@ public class Vertex implements Serializable, Markable {
     }
 
     @Override
+    public String toString() {
+        return '\"' + name + '\"';
+    }
+
+    @Override
     public int getDistance() {
 
         return marker.getDistance();
