@@ -16,4 +16,6 @@ public interface Markable {
     boolean hasMarker();
 
     void removeMarker();
+
+    void setMarker(Marker marker);
 }

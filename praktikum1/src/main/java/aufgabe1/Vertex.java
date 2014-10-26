@@ -25,6 +25,7 @@ public class Vertex implements Serializable, Markable {
         return marker;
     }
 
+    @Override
     public void setMarker(Marker marker) {
         this.marker = marker;
     }
