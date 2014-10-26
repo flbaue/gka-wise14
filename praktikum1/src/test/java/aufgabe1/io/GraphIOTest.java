@@ -86,4 +86,16 @@ public class GraphIOTest {
         assertEquals(12, graph.vertexSet().size());
         assertEquals(15, graph.edgeSet().size());
     }
+
+    @Test
+    public void testGraphIOWithGraphGka2() throws Exception {
+        GraphIO graphIO = new GraphIO();
+        URL url = getClass().getResource("/graph2.gka.txt");
+        File file = new File(url.toURI());
+
+        Graph<Vertex, DefaultWeightedEdge> graph = graphIO.readGraphFromFile(file);
+
+        assertEquals(11, graph.vertexSet().size());
+        assertEquals(38, graph.edgeSet().size());
+    }
 }

@@ -14,7 +14,7 @@ class FileEntry {
     static final String EDGE = NAME;
     static final String DIRECTED = "\\x2D\\x3E";
     static final String UNDIRECTED = "\\x2D\\x2D";
-    static final String NODE2 = "(" + UNDIRECTED + ")|(" + DIRECTED + ")" + NAME;
+    static final String NODE2 = "((" + UNDIRECTED + ")|(" + DIRECTED + "))" + NAME;
     static final String WEIGHT = NUMBER;
     static final String ENTRY = NODE + "(" + NODE2 + ")?" + "(" + EDGE + ")?" + "(:" + WEIGHT + ")?" + ";";
     static final Pattern ENTRY_PATTERN = Pattern.compile(ENTRY);

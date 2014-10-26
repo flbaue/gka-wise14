@@ -11,8 +11,8 @@ import java.io.File;
  */
 public class GraphIO {
 
-    GraphLoader loader = new GraphLoader();
-    GraphSaver saver = new GraphSaver();
+    private GraphLoader loader = new GraphLoader();
+    private GraphSaver saver = new GraphSaver();
 
     public Graph<Vertex, DefaultWeightedEdge> readGraphFromFile(File path) {
         if (path.exists() && path.isFile()) {
