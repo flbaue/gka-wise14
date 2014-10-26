@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by flbaue on 24.10.14.
  */
-public class Vertex implements Serializable {
+public class Vertex implements Serializable, Markable {
 
     private final String name;
     private Marker marker;
@@ -44,5 +44,36 @@ public class Vertex implements Serializable {
     @Override
     public int hashCode() {
         return name.hashCode();
+    }
+
+    @Override
+    public int getDistance() {
+
+        return marker.getDistance();
+    }
+
+    @Override
+    public Vertex getPredecessor() {
+        return marker.getPredecessor();
+    }
+
+    @Override
+    public void visit() {
+        marker.visit();
+    }
+
+    @Override
+    public boolean isVisited() {
+        return false;
+    }
+
+    @Override
+    public boolean hasMarker() {
+        return marker != null;
+    }
+
+    @Override
+    public void removeMarker() {
+        marker = null;
     }
 }
