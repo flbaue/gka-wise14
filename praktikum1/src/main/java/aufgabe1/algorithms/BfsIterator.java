@@ -29,6 +29,7 @@ public class BfsIterator implements Iterator<Vertex> {
     }
 
     private void findNeighbors(final Vertex vertex) {
+        neighbors = new LinkedList<>();
         for (DefaultWeightedEdge e : graph.edgesOf(vertex)) {
             Vertex v = Graphs.getOppositeVertex(graph, e, vertex);
             if (v.hasMarker() && v.isVisited()) {
@@ -43,27 +44,33 @@ public class BfsIterator implements Iterator<Vertex> {
 
     @Override
     public boolean hasNext() {
-        if (currentVertex == null) {
+        // getting the next vertex to visit
+        if (currentVertex == null && queue.size() > 0) {
             currentVertex = queue.poll();
             findNeighbors(currentVertex);
             return true;
         }
 
-        for (Vertex v : neighbors) {
-            if (v.isVisited()) {
-                continue;
-            }
-            if (v.getPredecessor() == null || v.getDistance() > currentVertex.getDistance() + 1) {
-                return true;
+        // is there a neighbor we haven't visited, or that will be closer now?
+        if(currentVertex != null) {
+            for (Vertex v : neighbors) {
+                if (v.isVisited()) {
+                    continue;
+                }
+                if (v.getPredecessor() == null || v.getDistance() > currentVertex.getDistance() + 1) {
+                    return true;
+                }
             }
         }
 
+        // if no neighbor was available, we try the next vertex
         if (queue.size() > 0) {
             currentVertex = queue.poll();
             findNeighbors(currentVertex);
             return true;
         }
 
+        // still nothing, than we are done.
         return false;
     }
 
