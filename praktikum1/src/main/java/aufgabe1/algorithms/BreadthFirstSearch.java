@@ -21,6 +21,6 @@ public class BreadthFirstSearch implements Iterable<Vertex> {
 
     @Override
     public Iterator<Vertex> iterator() {
-        return new BfsIterator(graph, startVertex);
+        return new BreadthFirstSearchIterator(graph, startVertex);
     }
 }

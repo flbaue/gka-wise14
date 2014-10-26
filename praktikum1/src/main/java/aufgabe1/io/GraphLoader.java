@@ -103,7 +103,11 @@ class GraphLoader {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                lines.add(new FileEntry(line));
+                try {
+                    lines.add(new FileEntry(line));
+                } catch (IllegalArgumentException e) {
+                    continue;
+                }
             }
 
         } catch (IOException e) {

@@ -14,14 +14,14 @@ import java.util.LinkedList;
 /**
  * Created by flbaue on 26.10.14.
  */
-public class BfsIterator implements Iterator<Vertex> {
+public class BreadthFirstSearchIterator implements Iterator<Vertex> {
 
     private Deque<Vertex> queue = new LinkedList<>();
     private Deque<Vertex> neighbors = new LinkedList<>();
     private Vertex currentVertex;
     private Graph<Vertex, DefaultWeightedEdge> graph;
 
-    public BfsIterator(Graph<Vertex, DefaultWeightedEdge> graph, Vertex startVertex) {
+    public BreadthFirstSearchIterator(Graph<Vertex, DefaultWeightedEdge> graph, Vertex startVertex) {
         GraphUtils.removeMarkers(graph);
         startVertex.setMarker(new Marker(null, 0));
         queue.add(startVertex);
