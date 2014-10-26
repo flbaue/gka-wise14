@@ -33,6 +33,8 @@ public class Dijkstra {
             // 1.1 If no vertex is left, we are done.
             if (vertex == null) {
                 break;
+            } else {
+                vertex.visit();
             }
 
             // 2. check and update all distances to unvisited neighbors
