@@ -52,12 +52,13 @@ public class BfsIterator implements Iterator<Vertex> {
         }
 
         // is there a neighbor we haven't visited, or that will be closer now?
-        if(currentVertex != null) {
+        if (currentVertex != null) {
             for (Vertex v : neighbors) {
                 if (v.isVisited()) {
                     continue;
                 }
-                if (v.getPredecessor() == null || v.getDistance() > currentVertex.getDistance() + 1) {
+                int weight = getEdgeWeight(v);
+                if (v.getPredecessor() == null || v.getDistance() > currentVertex.getDistance() + weight) {
                     return true;
                 }
             }
@@ -74,6 +75,11 @@ public class BfsIterator implements Iterator<Vertex> {
         return false;
     }
 
+    private int getEdgeWeight(Vertex v) {
+        DefaultWeightedEdge e = graph.getEdge(currentVertex, v);
+        return (int) graph.getEdgeWeight(e);
+    }
+
     @Override
     public Vertex next() {
         if (!currentVertex.isVisited()) {
@@ -83,7 +89,8 @@ public class BfsIterator implements Iterator<Vertex> {
 
         if (neighbors.size() > 0) {
             Vertex n = neighbors.poll();
-            n.setMarker(new Marker(currentVertex, currentVertex.getDistance() + 1));
+            int weight = getEdgeWeight(n);
+            n.setMarker(new Marker(currentVertex, currentVertex.getDistance() + weight));
             if (neighbors.size() == 0) {
                 currentVertex = null;
             }
