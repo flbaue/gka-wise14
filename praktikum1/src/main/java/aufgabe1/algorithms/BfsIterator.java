@@ -28,12 +28,16 @@ public class BfsIterator implements Iterator<Vertex> {
         this.graph = graph;
     }
 
-    private void findNeigbors(final Vertex vertex) {
+    private void findNeighbors(final Vertex vertex) {
         for (DefaultWeightedEdge e : graph.edgesOf(vertex)) {
             Vertex v = Graphs.getOppositeVertex(graph, e, vertex);
-            v.setMarker(new Marker(null, 0));
+            if (v.hasMarker() && v.isVisited()) {
+                continue;
+            } else if (!v.hasMarker()) {
+                v.setMarker(new Marker(null, 0));
+                queue.add(v);
+            }
             neighbors.add(v);
-            queue.add(v);
         }
     }
 
@@ -41,15 +45,25 @@ public class BfsIterator implements Iterator<Vertex> {
     public boolean hasNext() {
         if (currentVertex == null) {
             currentVertex = queue.poll();
-            findNeigbors(currentVertex);
+            findNeighbors(currentVertex);
             return true;
         }
 
         for (Vertex v : neighbors) {
-            if (!v.hasMarker() || v.getDistance() > currentVertex.getDistance() + 1) {
+            if (v.isVisited()) {
+                continue;
+            }
+            if (v.getPredecessor() == null || v.getDistance() > currentVertex.getDistance() + 1) {
                 return true;
             }
         }
+
+        if (queue.size() > 0) {
+            currentVertex = queue.poll();
+            findNeighbors(currentVertex);
+            return true;
+        }
+
         return false;
     }
 

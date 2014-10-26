@@ -64,7 +64,7 @@ public class Vertex implements Serializable, Markable {
 
     @Override
     public boolean isVisited() {
-        return false;
+        return marker.isVisited();
     }
 
     @Override
