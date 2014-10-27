@@ -11,13 +11,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by flbaue on 20.10.14.
  */
 class GraphLoader {
+
+    Map<String, Vertex> vertexMap = new HashMap<>();
 
     public Graph<Vertex, DefaultWeightedEdge> fromFile(final File path) {
         final List<FileEntry> lines = convertFileToListOfFileEntrys(path);
@@ -51,8 +55,8 @@ class GraphLoader {
     private void addEdgesToGraph(WeightedGraph<Vertex, DefaultWeightedEdge> graph, List<FileEntry> lines) {
         for (FileEntry entry : lines) {
             if (entry.getNode2Name() != null) {
-                Vertex vertex1 = new Vertex(entry.getNode1Name());
-                Vertex vertex2 = new Vertex(entry.getNode2Name());
+                final Vertex vertex1 = vertexMap.get(entry.getNode1Name());
+                final Vertex vertex2 = vertexMap.get(entry.getNode2Name());
                 DefaultWeightedEdge edge = graph.addEdge(vertex1, vertex2);
                 if (entry.getWeight() != 0) {
                     graph.setEdgeWeight(edge, (double) entry.getWeight());
@@ -63,9 +67,16 @@ class GraphLoader {
 
     private void addNodesToGraph(Graph<Vertex, DefaultWeightedEdge> graph, List<FileEntry> lines) {
         for (FileEntry entry : lines) {
-            graph.addVertex(new Vertex(entry.getNode1Name()));
-            if (entry.getNode2Name() != null) {
-                graph.addVertex(new Vertex(entry.getNode2Name()));
+            if (!vertexMap.containsKey(entry.getNode1Name())) {
+                final Vertex vertex = new Vertex(entry.getNode1Name());
+                vertexMap.put(entry.getNode1Name(), vertex);
+                graph.addVertex(vertex);
+            }
+
+            if (entry.getNode2Name() != null && !vertexMap.containsKey(entry.getNode2Name())) {
+                final Vertex vertex = new Vertex(entry.getNode2Name());
+                vertexMap.put(entry.getNode2Name(), vertex);
+                graph.addVertex(vertex);
             }
         }
     }
