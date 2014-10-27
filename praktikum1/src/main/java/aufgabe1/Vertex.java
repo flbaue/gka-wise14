@@ -1,6 +1,8 @@
 package aufgabe1;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Created by flbaue on 24.10.14.
@@ -28,6 +30,14 @@ public class Vertex implements Serializable, Markable {
     @Override
     public void setMarker(Marker marker) {
         this.marker = marker;
+    }
+
+    public Collection<Vertex> getThisAndPredecessors() {
+        Collection<Vertex> predecessors = new ArrayList<>();
+        for (Vertex tmp = this; tmp != null; tmp = tmp.getPredecessor()) {
+            predecessors.add(tmp);
+        }
+        return predecessors;
     }
 
     @Override

@@ -27,7 +27,7 @@ public class Marker {
         return visited;
     }
 
-    public void visit(){
+    public void visit() {
         visited = true;
     }
 }
