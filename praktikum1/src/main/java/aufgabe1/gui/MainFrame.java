@@ -4,10 +4,13 @@ import aufgabe1.Vertex;
 import aufgabe1.algorithms.BreadthFirstSearch;
 import aufgabe1.io.GraphIO;
 import aufgabe1.utils.FileUtils;
+import aufgabe1.utils.GraphUtils;
 import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
+import com.mxgraph.util.mxStyleUtils;
+import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxStylesheet;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
@@ -82,8 +85,7 @@ public class MainFrame extends JFrame {
 
                             JGraphXAdapter jgxAdapter = new JGraphXAdapter<String, DefaultEdge>(graph);
                             mxGraphComponent graphComponent = new mxGraphComponent(jgxAdapter);
-
-                            setStandardCellStyle(jgxAdapter);
+                            setStandardCellStyle(jgxAdapter, GraphUtils.isDirectedGraph(graph));
                             handleBfsShortestWay(jgxAdapter, graphComponent.getGraphControl());
 
                             mxCircleLayout layout = new mxCircleLayout(jgxAdapter);
@@ -112,15 +114,27 @@ public class MainFrame extends JFrame {
         });
     }
 
-    private void setStandardCellStyle(JGraphXAdapter jgxAdapter) {
+    private void setStandardCellStyle(JGraphXAdapter jgxAdapter, boolean isDirected) {
         mxStylesheet style = jgxAdapter.getStylesheet();
-        Map<String, Object> vstyle = new HashMap(style.getDefaultVertexStyle());
-        vstyle.put(mxConstants.STYLE_FILLCOLOR, "#FFFFFF");
-        for (Object elem : jgxAdapter.getChildVertices(jgxAdapter.getDefaultParent())) {
-            mxCell cell = (mxCell) elem;
-            jgxAdapter.getView().getState(cell).setStyle(vstyle);
-            repaint();
-        }
+        Map<String, Object> edgeStyle = new HashMap(style.getDefaultEdgeStyle());
+
+        mxStyleUtils.setCellStyles(jgxAdapter.getModel(), jgxAdapter.getChildVertices(jgxAdapter.getDefaultParent()), mxConstants.STYLE_FILLCOLOR, "#ffffff");
+
+        edgeStyle.put(mxConstants.STYLE_SHAPE,    mxConstants.SHAPE_CONNECTOR);
+        edgeStyle.put(mxConstants.STYLE_ENDARROW, isDirected ? mxConstants.ARROW_CLASSIC : mxConstants.NONE);
+        edgeStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000");
+        edgeStyle.put(mxConstants.STYLE_FONTCOLOR, "#000000");
+        edgeStyle.put(mxConstants.STYLE_LABEL_BACKGROUNDCOLOR, "#ffffff");
+
+        mxStylesheet stylesheet = new mxStylesheet();
+        stylesheet.setDefaultEdgeStyle(edgeStyle);
+        jgxAdapter.setStylesheet(stylesheet);
+//
+//        for (Object elem : jgxAdapter.getChildVertices(jgxAdapter.getDefaultParent())) {
+//            mxCell cell = (mxCell) elem;
+//            jgxAdapter.getView().getState(cell).setStyle(vstyle);
+//            repaint();
+//        }
     }
 
     private void handleBfsShortestWay(JGraphXAdapter jgxAdapter, mxGraphComponent.mxGraphControl graphControl) {
@@ -134,10 +148,10 @@ public class MainFrame extends JFrame {
         vstyle.put(mxConstants.STYLE_FILLCOLOR, "#000000");
 
         bfsPopupHandler.handleBfsStartStopVertexCell((v1, v2) -> {
+            stringBuilder.delete(0, stringBuilder.length());
             Vertex start = (Vertex) v1.getValue();
             Vertex stop = (Vertex) v2.getValue();
             Vertex shortest = null;
-            setStandardCellStyle(jgxAdapter);
             BreadthFirstSearch iterator = new BreadthFirstSearch(graph, start);
 
             for (Vertex vertex : iterator) {
