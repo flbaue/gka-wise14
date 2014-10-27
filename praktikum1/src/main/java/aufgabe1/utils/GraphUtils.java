@@ -22,5 +22,9 @@ public final class GraphUtils {
         for (Vertex v : graph.vertexSet()) {
             v.removeMarker();
         }
+        for (DefaultWeightedEdge e : graph.edgeSet()) {
+            graph.getEdgeSource(e).removeMarker();
+            graph.getEdgeTarget(e).removeMarker();
+        }
     }
 }
