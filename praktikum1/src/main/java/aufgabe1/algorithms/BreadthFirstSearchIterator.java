@@ -19,6 +19,7 @@ public class BreadthFirstSearchIterator implements Iterator<Vertex> {
     private Deque<Vertex> neighbors = new LinkedList<>();
     private Vertex currentVertex;
     private Graph<Vertex, DefaultWeightedEdge> graph;
+    private int dereferences = 0;
 
     public BreadthFirstSearchIterator(Graph<Vertex, DefaultWeightedEdge> graph, Vertex startVertex) {
         GraphUtils.removeMarkers(graph);
@@ -29,7 +30,9 @@ public class BreadthFirstSearchIterator implements Iterator<Vertex> {
 
     private void findNeighbors(final Vertex vertex) {
         neighbors = new LinkedList<>();
+        dereferences++;
         for (DefaultWeightedEdge e : graph.edgesOf(vertex)) {
+            dereferences++;
             Vertex v = graph.getEdgeTarget(e);
             if ((v.hasMarker() && v.isVisited()) || v.equals(vertex)) {
                 continue;
@@ -75,7 +78,9 @@ public class BreadthFirstSearchIterator implements Iterator<Vertex> {
     }
 
     private int getEdgeWeight(Vertex v) {
+        dereferences++;
         DefaultWeightedEdge e = graph.getEdge(currentVertex, v);
+        dereferences++;
         return (int) graph.getEdgeWeight(e);
     }
 
@@ -97,5 +102,13 @@ public class BreadthFirstSearchIterator implements Iterator<Vertex> {
         }
 
         return null;
+    }
+
+    public int getGraphDereferences() {
+        return dereferences;
+    }
+
+    public void resetGraphDereferences() {
+        dereferences = 0;
     }
 }

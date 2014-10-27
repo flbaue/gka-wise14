@@ -15,6 +15,7 @@ public class Dijkstra {
 
     private final Graph<Vertex, DefaultWeightedEdge> graph;
     private final Vertex startVertex;
+    private int dereferences = 0;
 
     public Dijkstra(Graph<Vertex, DefaultWeightedEdge> graph, Vertex startVertex) {
         this.graph = graph;
@@ -43,6 +44,7 @@ public class Dijkstra {
     }
 
     private void updateUnvisitedNeighbors(Vertex vertex) {
+        dereferences++;
         List<Vertex> neighbors = Graphs.neighborListOf(graph, vertex);
         for (Vertex neighbor : neighbors) {
             if (neighbor.isVisited()) {
@@ -57,6 +59,7 @@ public class Dijkstra {
 
     private Vertex findClosestUnvisitedVertex() {
         Vertex closest = null;
+        dereferences++;
         for (Vertex vertex : graph.vertexSet()) {
             if (vertex.isVisited()) {
                 continue;
@@ -71,6 +74,7 @@ public class Dijkstra {
     }
 
     private void prepareVertexes() {
+        dereferences++;
         for (Vertex vertex : graph.vertexSet()) {
             if (vertex.equals(startVertex)) {
                 vertex.setMarker(new Marker(vertex, 0));
@@ -81,7 +85,17 @@ public class Dijkstra {
     }
 
     private int getEdgeWeight(Vertex source, Vertex target) {
+        dereferences++;
         DefaultWeightedEdge e = graph.getEdge(source, target);
+        dereferences++;
         return (int) graph.getEdgeWeight(e);
+    }
+
+    public int getGraphDereferences() {
+        return dereferences;
+    }
+
+    public void resetGraphDereferences() {
+        dereferences = 0;
     }
 }
