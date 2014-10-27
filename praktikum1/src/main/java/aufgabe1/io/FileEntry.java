@@ -49,7 +49,7 @@ class FileEntry {
     private void parseLine(final String line) {
         Pattern directedPattern = Pattern.compile(DIRECTED);
         Matcher directedMatcher = directedPattern.matcher(line);
-        if(directedMatcher.find()){
+        if (directedMatcher.find()) {
             isDirected = true;
         } else {
             isDirected = false;

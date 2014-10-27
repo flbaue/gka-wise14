@@ -1,9 +1,14 @@
 package aufgabe1.gui;
 
+import aufgabe1.Vertex;
+import aufgabe1.algorithms.BreadthFirstSearch;
 import aufgabe1.io.GraphIO;
 import aufgabe1.utils.FileUtils;
 import com.mxgraph.layout.mxCircleLayout;
+import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxConstants;
+import com.mxgraph.view.mxStylesheet;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultEdge;
@@ -12,7 +17,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Created by schlegel11 on 24.10.14.
@@ -65,22 +70,29 @@ public class MainFrame extends JFrame {
         menuItem.addActionListener(e -> {
             try {
                 switch (e.getActionCommand()) {
-                    case (MENU_ITEM_LOAD): {
+                    case MENU_ITEM_LOAD: {
                         System.out.println(MENU_ITEM_LOAD);
 
                         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                             File file = fileChooser.getSelectedFile();
                             graph = ListenableGraphFactory.createFromGraph(graphIO.readGraphFromFile(file));
+
                             JGraphXAdapter jgxAdapter = new JGraphXAdapter<String, DefaultEdge>(graph);
                             mxGraphComponent graphComponent = new mxGraphComponent(jgxAdapter);
+
+                            setStandardCellStyle(jgxAdapter);
+                            handleBfsShortestWay(jgxAdapter, graphComponent.getGraphControl());
+
                             mxCircleLayout layout = new mxCircleLayout(jgxAdapter);
-                            getContentPane().add(graphComponent);
+                            layout.setRadius(400);
+                            layout.setMoveCircle(true);
                             layout.execute(jgxAdapter.getDefaultParent());
+                            getContentPane().add(graphComponent);
 
                         }
                     }
                     break;
-                    case (MENU_ITEM_SAVE): {
+                    case MENU_ITEM_SAVE: {
                         System.out.println(MENU_ITEM_SAVE);
                         Objects.requireNonNull(graph, NULL_GRAPH);
                         if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -95,6 +107,53 @@ public class MainFrame extends JFrame {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), MESSAGE_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
             }
         });
+    }
+
+    private void setStandardCellStyle(JGraphXAdapter jgxAdapter) {
+        mxStylesheet style = jgxAdapter.getStylesheet();
+        Map<String, Object> vstyle = new HashMap(style.getDefaultVertexStyle());
+        vstyle.put(mxConstants.STYLE_FILLCOLOR, "#FFFFFF");
+        for (Object elem : jgxAdapter.getChildVertices(jgxAdapter.getDefaultParent())) {
+            mxCell cell = (mxCell) elem;
+            jgxAdapter.getView().getState(cell).setStyle(vstyle);
+            repaint();
+        }
+    }
+
+    private void handleBfsShortestWay(JGraphXAdapter jgxAdapter, mxGraphComponent.mxGraphControl graphControl) {
+
+        BfsPopupHandler bfsPopupHandler = new BfsPopupHandler(graphControl);
+        Object[] cells = jgxAdapter.getChildVertices(jgxAdapter.getDefaultParent());
+        Collection<Object> cellList = Arrays.asList(cells);
+        mxStylesheet style = jgxAdapter.getStylesheet();
+        Map<String, Object> vstyle = new HashMap(style.getDefaultVertexStyle());
+        vstyle.put(mxConstants.STYLE_FILLCOLOR, "#000000");
+
+        bfsPopupHandler.handleBfsStartStopVertexCell((v1, v2) -> {
+            Vertex start = (Vertex) v1.getValue();
+            Vertex stop = (Vertex) v2.getValue();
+            Vertex shortest = null;
+            setStandardCellStyle(jgxAdapter);
+            BreadthFirstSearch iterator = new BreadthFirstSearch(graph, start);
+
+            for (Vertex vertex : iterator) {
+                if (vertex.equals(stop)) {
+                    shortest = vertex;
+                    break;
+                }
+            }
+            if(Objects.nonNull(shortest)) {
+                for (Vertex vertex : shortest.getThisAndPredecessors()) {
+                    mxCell cell = (mxCell) cellList.stream().filter(c -> ((mxCell) c).getValue().equals(vertex)).findFirst().get();
+                    jgxAdapter.getView().getState(cell).setStyle(vstyle);
+                    repaint();
+                }
+            }else {
+                JOptionPane.showMessageDialog(this, "No way", MESSAGE_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
+            }
+
+        });
+
     }
 
     public static void main(String[] args) {
