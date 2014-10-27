@@ -14,8 +14,8 @@ public final class FileUtils {
     }
 
     public static File setFileSuffix(File file, String extension) {
-        Objects.nonNull(file);
-        Objects.nonNull(extension);
+        Objects.requireNonNull(file);
+        Objects.requireNonNull(extension);
         return new File(String.format(PREFIX_SUFFIX, file.getAbsolutePath(), extension));
     }
 }
