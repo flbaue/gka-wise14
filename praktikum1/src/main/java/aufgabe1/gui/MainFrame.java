@@ -18,6 +18,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by schlegel11 on 24.10.14.
@@ -29,7 +30,9 @@ public class MainFrame extends JFrame {
     private static final String FILE_DESCRIPTION = "GraphFiles";
     private static final String FILE_SUFFIX = "txt";
     private static final String NULL_GRAPH = "No Graph is loaded.";
-    private static final String MESSAGE_DIALOG_TITLE = "Warning";
+    private static final String MESSAGE_DIALOG_TITLE = "Info";
+    private static final String NO_WAY_FOUND = "No way found.";
+    private static final String WAY_FOUND = "Vertices: %s EdgeDistance: %s";
     private static final String FRAME_TITLE = "GKA-Graph-Application";
     private final GraphIO graphIO = new GraphIO();
     private final JFileChooser fileChooser = new JFileChooser();
@@ -104,7 +107,7 @@ public class MainFrame extends JFrame {
                 }
                 validate();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), MESSAGE_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, ex.getMessage(), MESSAGE_DIALOG_TITLE, JOptionPane.INFORMATION_MESSAGE);
             }
         });
     }
@@ -122,6 +125,7 @@ public class MainFrame extends JFrame {
 
     private void handleBfsShortestWay(JGraphXAdapter jgxAdapter, mxGraphComponent.mxGraphControl graphControl) {
 
+        StringBuilder stringBuilder = new StringBuilder();
         BfsPopupHandler bfsPopupHandler = new BfsPopupHandler(graphControl);
         Object[] cells = jgxAdapter.getChildVertices(jgxAdapter.getDefaultParent());
         Collection<Object> cellList = Arrays.asList(cells);
@@ -142,16 +146,18 @@ public class MainFrame extends JFrame {
                     break;
                 }
             }
-            if(Objects.nonNull(shortest)) {
+            if (Objects.nonNull(shortest)) {
                 for (Vertex vertex : shortest.getThisAndPredecessors()) {
                     mxCell cell = (mxCell) cellList.stream().filter(c -> ((mxCell) c).getValue().equals(vertex)).findFirst().get();
                     jgxAdapter.getView().getState(cell).setStyle(vstyle);
                     repaint();
                 }
-            }else {
-                JOptionPane.showMessageDialog(this, "No way", MESSAGE_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
+                stringBuilder.append(String.format(WAY_FOUND, shortest.getThisAndPredecessors().stream().map(Object::toString).distinct()
+                        .collect(Collectors.joining("<-")), shortest.getDistance()));
+            } else {
+                stringBuilder.append(NO_WAY_FOUND);
             }
-
+            JOptionPane.showMessageDialog(this, stringBuilder.toString(), MESSAGE_DIALOG_TITLE, JOptionPane.INFORMATION_MESSAGE);
         });
 
     }
