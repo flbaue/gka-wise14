@@ -25,6 +25,7 @@ class GraphLoader {
 
     public Graph<Vertex, DefaultWeightedEdge> fromFile(final File path) {
         final List<FileEntry> lines = convertFileToListOfFileEntrys(path);
+        vertexMap.clear();
         return convertListOfStringsToGraph(lines);
     }
 
