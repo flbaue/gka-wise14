@@ -30,6 +30,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>de.sciss</groupId>
+            <artifactId>weblaf</artifactId>
+            <version>1.28</version>
+        </dependency>
+        <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>
             <version>0.9.1-SNAPSHOT</version>
