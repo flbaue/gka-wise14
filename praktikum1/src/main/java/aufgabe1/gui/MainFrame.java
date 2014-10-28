@@ -5,7 +5,6 @@ import aufgabe1.algorithms.BreadthFirstSearch;
 import aufgabe1.io.GraphIO;
 import aufgabe1.utils.FileUtils;
 import aufgabe1.utils.GraphUtils;
-import com.alee.laf.WebLookAndFeel;
 import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
@@ -18,6 +17,7 @@ import org.jgrapht.graph.DefaultEdge;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 import java.io.File;
 import java.util.*;
@@ -174,7 +174,7 @@ public class MainFrame extends JFrame {
     public static void main(String[] args) {
 
         try {
-            UIManager.setLookAndFeel(new WebLookAndFeel());
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
             JFrame mainFrame = MainFrame.newInstance();
             mainFrame.setVisible(true);
         } catch (UnsupportedLookAndFeelException e) {
