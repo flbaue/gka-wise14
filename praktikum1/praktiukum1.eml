@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component LANGUAGE_LEVEL="JDK_1_8" inheritJdk="true">
+	<output-test url="file://$MODULE_DIR$/target/test-classes"/>
+	<contentEntry url="file://$MODULE_DIR$">
+		<testFolder url="file://$MODULE_DIR$/src/test/java"/>
+		<testFolder url="file://$MODULE_DIR$/src/test/resources"/>
+		<excludeFolder url="file://$MODULE_DIR$/target"/>
+	</contentEntry>
+	<levels>
+		<level name="Maven: de.sciss:weblaf:1.28" value="project"/>
+		<level name="Maven: de.sciss:weblaf-core:1.28" value="project"/>
+		<level name="Maven: com.thoughtworks.xstream:xstream:1.4.7" value="project"/>
+		<level name="Maven: net.htmlparser.jericho:jericho-html:3.3" value="project"/>
+		<level name="Maven: com.mortennobel:java-image-scaling:0.8.5" value="project"/>
+		<level name="Maven: com.jhlabs:filters:2.0.235" value="project"/>
+		<level name="Maven: org.slf4j:slf4j-api:1.7.7" value="project"/>
+		<level name="Maven: org.slf4j:slf4j-simple:1.7.7" value="project"/>
+		<level name="Maven: de.sciss:weblaf-ui:1.28" value="project"/>
+		<level name="Maven: org.jgrapht:jgrapht-core:0.9.1-SNAPSHOT" value="project"/>
+		<level name="Maven: org.jgrapht:jgrapht-ext:0.9.1-SNAPSHOT" value="project"/>
+		<level name="Maven: org.tinyjee.jgraphx:jgraphx:2.0.0.1" value="project"/>
+		<level name="Maven: jgraph:jgraph:5.13.0.0" value="project"/>
+		<level name="Maven: junit:junit:4.11" value="project"/>
+		<level name="Maven: org.hamcrest:hamcrest-core:1.3" value="project"/>
+	</levels>
+</component>
