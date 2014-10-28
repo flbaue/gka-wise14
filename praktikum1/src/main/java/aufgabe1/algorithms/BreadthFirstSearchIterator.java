@@ -4,6 +4,7 @@ import aufgabe1.Marker;
 import aufgabe1.Vertex;
 import aufgabe1.utils.GraphUtils;
 import org.jgrapht.Graph;
+import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.Deque;
@@ -31,12 +32,12 @@ public class BreadthFirstSearchIterator implements Iterator<Vertex> {
         dereferences++;
         for (DefaultWeightedEdge e : graph.edgesOf(vertex)) {
             dereferences++;
-            Vertex v = graph.getEdgeTarget(e);
-            if (v.hasMarker() || v.equals(vertex)) {
+            Vertex neighbor = Graphs.getOppositeVertex(graph, e, vertex);
+            if (neighbor.hasMarker() || neighbor.equals(vertex)) {
                 continue;
-            } else if (!v.hasMarker()) {
-                v.setMarker(new Marker(vertex, v.getDistance() + 1));
-                queue.add(v);
+            } else if (!neighbor.hasMarker()) {
+                neighbor.setMarker(new Marker(vertex, vertex.getDistance() + 1));
+                queue.add(neighbor);
             }
         }
     }

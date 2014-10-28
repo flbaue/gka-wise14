@@ -35,7 +35,7 @@ public class Vertex implements Serializable, Markable {
 
     public Collection<Vertex> getThisAndPredecessors() {
         LinkedList<Vertex> predecessors = new LinkedList<>();
-        for (Vertex tmp = this; tmp != null; tmp = tmp.getPredecessor()) {
+        for (Vertex tmp = this; tmp != tmp.getPredecessor(); tmp = tmp.getPredecessor()) {
             predecessors.push(tmp);
         }
         return predecessors;
