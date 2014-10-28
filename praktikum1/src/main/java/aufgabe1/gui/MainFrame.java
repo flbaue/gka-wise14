@@ -5,14 +5,14 @@ import aufgabe1.algorithms.BreadthFirstSearch;
 import aufgabe1.io.GraphIO;
 import aufgabe1.utils.FileUtils;
 import aufgabe1.utils.GraphUtils;
+import com.alee.laf.WebLookAndFeel;
 import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxStyleUtils;
-import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxStylesheet;
-import org.jgrapht.ListenableGraph;
+import org.jgrapht.Graph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultEdge;
 
@@ -21,7 +21,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 
 /**
  * Created by schlegel11 on 24.10.14.
@@ -35,11 +35,11 @@ public class MainFrame extends JFrame {
     private static final String NULL_GRAPH = "No Graph is loaded.";
     private static final String MESSAGE_DIALOG_TITLE = "Info";
     private static final String NO_WAY_FOUND = "No way found.";
-    private static final String WAY_FOUND = "Vertices: %s EdgeDistance: %s";
+    private static final String WAY_FOUND = "Vertices: %s\nEdgeDistance: %s";
     private static final String FRAME_TITLE = "GKA-Graph-Application";
     private final GraphIO graphIO = new GraphIO();
     private final JFileChooser fileChooser = new JFileChooser();
-    private ListenableGraph graph;
+    private Graph graph;
 
     private MainFrame() throws HeadlessException {
         init();
@@ -71,6 +71,23 @@ public class MainFrame extends JFrame {
         pack();
     }
 
+    private void initGraphXComponent() {
+        StringBuilder stringBuilder = new StringBuilder();
+        JGraphXAdapter jgxAdapter = new JGraphXAdapter<String, DefaultEdge>(graph);
+        mxGraphComponent graphComponent = new mxGraphComponent(jgxAdapter);
+        setStandardCellStyle(jgxAdapter, GraphUtils.isDirectedGraph(graph));
+        handleBfsShortestWay(jgxAdapter, graphComponent.getGraphControl(), v -> {
+            stringBuilder.append(Objects.nonNull(v) ? String.format(WAY_FOUND, v.getThisAndPredecessors(), v.getDistance()) : NO_WAY_FOUND);
+            JOptionPane.showMessageDialog(this, stringBuilder.toString(), MESSAGE_DIALOG_TITLE, JOptionPane.INFORMATION_MESSAGE);
+            stringBuilder.delete(0, stringBuilder.length());
+        });
+        mxCircleLayout layout = new mxCircleLayout(jgxAdapter);
+        layout.setRadius(450);
+        layout.setMoveCircle(true);
+        layout.execute(jgxAdapter.getDefaultParent());
+        getContentPane().add(graphComponent);
+    }
+
 
     private void addActionListener(JMenuItem menuItem) {
         menuItem.addActionListener(e -> {
@@ -82,18 +99,7 @@ public class MainFrame extends JFrame {
                         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                             File file = fileChooser.getSelectedFile();
                             graph = ListenableGraphFactory.createFromGraph(graphIO.readGraphFromFile(file));
-
-                            JGraphXAdapter jgxAdapter = new JGraphXAdapter<String, DefaultEdge>(graph);
-                            mxGraphComponent graphComponent = new mxGraphComponent(jgxAdapter);
-                            setStandardCellStyle(jgxAdapter, GraphUtils.isDirectedGraph(graph));
-                            handleBfsShortestWay(jgxAdapter, graphComponent.getGraphControl());
-
-                            mxCircleLayout layout = new mxCircleLayout(jgxAdapter);
-                            layout.setRadius(400);
-                            layout.setMoveCircle(true);
-                            layout.execute(jgxAdapter.getDefaultParent());
-                            getContentPane().add(graphComponent);
-
+                            initGraphXComponent();
                         }
                     }
                     break;
@@ -120,7 +126,7 @@ public class MainFrame extends JFrame {
 
         mxStyleUtils.setCellStyles(jgxAdapter.getModel(), jgxAdapter.getChildVertices(jgxAdapter.getDefaultParent()), mxConstants.STYLE_FILLCOLOR, "#ffffff");
 
-        edgeStyle.put(mxConstants.STYLE_SHAPE,    mxConstants.SHAPE_CONNECTOR);
+        edgeStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
         edgeStyle.put(mxConstants.STYLE_ENDARROW, isDirected ? mxConstants.ARROW_CLASSIC : mxConstants.NONE);
         edgeStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000");
         edgeStyle.put(mxConstants.STYLE_FONTCOLOR, "#000000");
@@ -129,26 +135,19 @@ public class MainFrame extends JFrame {
         mxStylesheet stylesheet = new mxStylesheet();
         stylesheet.setDefaultEdgeStyle(edgeStyle);
         jgxAdapter.setStylesheet(stylesheet);
-//
-//        for (Object elem : jgxAdapter.getChildVertices(jgxAdapter.getDefaultParent())) {
-//            mxCell cell = (mxCell) elem;
-//            jgxAdapter.getView().getState(cell).setStyle(vstyle);
-//            repaint();
-//        }
+        repaint();
     }
 
-    private void handleBfsShortestWay(JGraphXAdapter jgxAdapter, mxGraphComponent.mxGraphControl graphControl) {
-
-        StringBuilder stringBuilder = new StringBuilder();
+    private void handleBfsShortestWay(JGraphXAdapter jgxAdapter, mxGraphComponent.mxGraphControl graphControl, Consumer<Vertex> consumer) {
         BfsPopupHandler bfsPopupHandler = new BfsPopupHandler(graphControl);
         Object[] cells = jgxAdapter.getChildVertices(jgxAdapter.getDefaultParent());
         Collection<Object> cellList = Arrays.asList(cells);
         mxStylesheet style = jgxAdapter.getStylesheet();
         Map<String, Object> vstyle = new HashMap(style.getDefaultVertexStyle());
-        vstyle.put(mxConstants.STYLE_FILLCOLOR, "#000000");
+        vstyle.put(mxConstants.STYLE_FILLCOLOR, "#889ee7");
 
         bfsPopupHandler.handleBfsStartStopVertexCell((v1, v2) -> {
-            stringBuilder.delete(0, stringBuilder.length());
+
             Vertex start = (Vertex) v1.getValue();
             Vertex stop = (Vertex) v2.getValue();
             Vertex shortest = null;
@@ -166,20 +165,21 @@ public class MainFrame extends JFrame {
                     jgxAdapter.getView().getState(cell).setStyle(vstyle);
                     repaint();
                 }
-                stringBuilder.append(String.format(WAY_FOUND, shortest.getThisAndPredecessors().stream().map(Object::toString).distinct()
-                        .collect(Collectors.joining("<-")), shortest.getDistance()));
-            } else {
-                stringBuilder.append(NO_WAY_FOUND);
             }
-            JOptionPane.showMessageDialog(this, stringBuilder.toString(), MESSAGE_DIALOG_TITLE, JOptionPane.INFORMATION_MESSAGE);
-        });
+            consumer.accept(shortest);
 
+        });
     }
 
     public static void main(String[] args) {
 
-        JFrame mainFrame = MainFrame.newInstance();
-        mainFrame.setVisible(true);
+        try {
+            UIManager.setLookAndFeel(new WebLookAndFeel());
+            JFrame mainFrame = MainFrame.newInstance();
+            mainFrame.setVisible(true);
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
 
     }
 }
