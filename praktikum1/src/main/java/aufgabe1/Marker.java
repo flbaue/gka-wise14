@@ -1,9 +1,11 @@
 package aufgabe1;
 
+import java.io.Serializable;
+
 /**
  * Created by flbaue on 24.10.14.
  */
-public class Marker {
+public class Marker implements Serializable {
 
     private final Vertex predecessor;
     private final int distance;
