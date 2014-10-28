@@ -3,6 +3,7 @@ package aufgabe1;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * Created by flbaue on 24.10.14.
@@ -33,9 +34,9 @@ public class Vertex implements Serializable, Markable {
     }
 
     public Collection<Vertex> getThisAndPredecessors() {
-        Collection<Vertex> predecessors = new ArrayList<>();
+        LinkedList<Vertex> predecessors = new LinkedList<>();
         for (Vertex tmp = this; tmp != null; tmp = tmp.getPredecessor()) {
-            predecessors.add(tmp);
+            predecessors.push(tmp);
         }
         return predecessors;
     }
