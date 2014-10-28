@@ -10,6 +10,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Objects;
 
 /**
  * Created by flbaue on 26.10.14.
@@ -33,13 +34,17 @@ public class BreadthFirstSearchIterator implements Iterator<Vertex> {
         for (DefaultWeightedEdge e : graph.edgesOf(vertex)) {
             dereferences++;
             Vertex neighbor = Graphs.getOppositeVertex(graph, e, vertex);
-            if (neighbor.hasMarker() || neighbor.equals(vertex)) {
+            if (neighbor.hasMarker() || neighbor.equals(vertex) || (GraphUtils.isDirectedGraph(graph) && !isOutgoingEdge(graph, neighbor, vertex))) {
                 continue;
             } else if (!neighbor.hasMarker()) {
                 neighbor.setMarker(new Marker(vertex, vertex.getDistance() + 1));
                 queue.add(neighbor);
             }
         }
+    }
+
+    private boolean isOutgoingEdge(Graph<Vertex, DefaultWeightedEdge> graph, Vertex source, Vertex target) {
+        return !(Objects.nonNull(graph.getEdge(source, target)) && graph.getEdgeTarget(graph.getEdge(source, target)).equals(target));
     }
 
     @Override
