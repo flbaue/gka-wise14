@@ -34,17 +34,13 @@ public class BreadthFirstSearchIterator implements Iterator<Vertex> {
         for (DefaultWeightedEdge e : graph.edgesOf(vertex)) {
             dereferences++;
             Vertex neighbor = Graphs.getOppositeVertex(graph, e, vertex);
-            if (neighbor.hasMarker() || neighbor.equals(vertex) || (GraphUtils.isDirectedGraph(graph) && !isOutgoingEdge(graph, neighbor, vertex))) {
+            if (neighbor.hasMarker() || neighbor.equals(vertex) || (GraphUtils.isDirectedGraph(graph) && !GraphUtils.isOutgoingEdge(graph, vertex, neighbor))) {
                 continue;
             } else if (!neighbor.hasMarker()) {
                 neighbor.setMarker(new Marker(vertex, vertex.getDistance() + 1));
                 queue.add(neighbor);
             }
         }
-    }
-
-    private boolean isOutgoingEdge(Graph<Vertex, DefaultWeightedEdge> graph, Vertex source, Vertex target) {
-        return !(Objects.nonNull(graph.getEdge(source, target)) && graph.getEdgeTarget(graph.getEdge(source, target)).equals(target));
     }
 
     @Override
