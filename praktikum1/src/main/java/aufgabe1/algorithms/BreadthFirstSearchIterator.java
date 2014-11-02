@@ -37,6 +37,7 @@ public class BreadthFirstSearchIterator implements Iterator<Vertex> {
                 continue;
             } else if (!neighbor.hasMarker()) {
                 neighbor.setMarker(new Marker(vertex, vertex.getDistance() + 1));
+                dereferences++;
                 queue.add(neighbor);
             }
         }
@@ -51,6 +52,7 @@ public class BreadthFirstSearchIterator implements Iterator<Vertex> {
     @Override
     public Vertex next() {
         Vertex v = queue.poll();
+        v.visit();
         findNeighbors(v);
         return v;
     }

@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.util.Iterator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class BreadthFirstSearchTest {
@@ -40,17 +41,21 @@ public class BreadthFirstSearchTest {
 
         assertTrue(iterator.hasNext());
         assertEquals(a, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals(b, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals(c, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals(d, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals(e, iterator.next());
 
-        while (iterator.hasNext()) {
-            iterator.next();
-        }
+        assertFalse(iterator.hasNext());
 
-        assertTrue(a.isVisited());
-        assertTrue(b.isVisited());
-        assertTrue(c.isVisited());
-        assertTrue(d.isVisited());
-        assertTrue(e.isVisited());
-
+        assertEquals(a, a.getPredecessor());
+        assertEquals(a, b.getPredecessor());
+        assertEquals(a, c.getPredecessor());
         assertEquals(b, d.getPredecessor());
+        assertEquals(b, e.getPredecessor());
     }
 }
