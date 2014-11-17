@@ -35,7 +35,7 @@ public class GraphGenerator {
     public void addShortestPath(Collection<Vertex> vertices) {
         Vertex tempVertex = null;
         for (Iterator<Vertex> itr = vertices.iterator(); itr.hasNext(); ) {
-            Vertex vertex = itr.next();
+            Vertex vertex = this.vertices.get(Integer.valueOf(itr.next().getName()));
             if (Objects.nonNull(tempVertex)) {
                 graph.setEdgeWeight(graph.addEdge(tempVertex, vertex), 1);
             }
