@@ -62,14 +62,20 @@ public class FloydWarshall {
 
     private Set<Vertex> getAllSources(Vertex vertex) {
         Set<Vertex> vertices = new HashSet<>();
-        getAllEdgesOfVertex(vertex, e -> vertices.add(graph.getEdgeSource(e)));
+        getAllEdgesOfVertex(vertex, e -> {
+            dereferences++;
+            vertices.add(graph.getEdgeSource(e));
+        });
         vertices.remove(vertex);
         return vertices;
     }
 
     private Set<Vertex> getAllTargets(Vertex vertex) {
         Set<Vertex> vertices = new HashSet<>();
-        getAllEdgesOfVertex(vertex, e -> vertices.add(graph.getEdgeTarget(e)));
+        getAllEdgesOfVertex(vertex, e -> {
+            dereferences++;
+            vertices.add(graph.getEdgeTarget(e));
+        });
         vertices.remove(vertex);
         return vertices;
     }
@@ -77,14 +83,15 @@ public class FloydWarshall {
     private void getAllEdgesOfVertex(Vertex vertex, Consumer<DefaultWeightedEdge> consumer) {
         dereferences++;
         for (DefaultWeightedEdge edge : graph.edgesOf(vertex)) {
-            dereferences++;
             consumer.accept(edge);
 
         }
     }
 
     private int getEdgeWeight(Vertex source, Vertex target) {
+        dereferences++;
         DefaultWeightedEdge e = graph.getEdge(source, target);
+        dereferences++;
         return (int) graph.getEdgeWeight(e);
     }
 }
