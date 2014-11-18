@@ -73,9 +73,10 @@ public class Dijkstra {
         return closest;
     }
 
-    private void prepareVertexes() {
+    void prepareVertexes() {
         dereferences++;
         for (Vertex vertex : graph.vertexSet()) {
+
             if (vertex.equals(startVertex)) {
                 vertex.setMarker(new Marker(vertex, 0));
             } else {

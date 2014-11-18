@@ -1,6 +1,11 @@
 *.class
 .idea/
 *.iml
+traget/
+*.classpath
+*.project
+*.eml
+*.userlibraries
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

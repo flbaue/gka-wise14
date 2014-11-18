@@ -51,12 +51,34 @@ public class DijkstraTest {
     }
 
     @Test
-    public void testGetGraphDereferences() throws Exception {
+    public void testPrepareVertexes() throws Exception {
+        GraphIO graphIO = new GraphIO();
+        URL url = getClass().getResource("/graph3.gka.txt");
+        File file = new File(url.toURI());
 
-    }
+        Vertex startVertex = null;
+        Graph<Vertex, DefaultWeightedEdge> graph = graphIO.readGraphFromFile(file);
+        for (Vertex vertex : graph.vertexSet()) {
+            if (vertex.getName().equals("Hamburg")) {
+                startVertex = vertex;
+            }
+        }
+        org.junit.Assert.assertNotNull(startVertex);
+        dijkstra = new Dijkstra(graph, startVertex);
+        dijkstra.run();
 
-    @Test
-    public void testResetGraphDereferences() throws Exception {
+        for (Vertex vertex : graph.vertexSet()) {
+            org.junit.Assert.assertNotNull(vertex.getPredecessor());
+        }
 
+        dijkstra.prepareVertexes();
+
+        for (Vertex vertex : graph.vertexSet()) {
+            if (vertex.getName().equals("Hamburg")) {
+                org.junit.Assert.assertEquals("Hamburg", vertex.getPredecessor().getName());
+            } else {
+                org.junit.Assert.assertNull(vertex.getPredecessor());
+            }
+        }
     }
 }
