@@ -70,6 +70,9 @@ public class Dijkstra {
                 closest = vertex;
             }
         }
+        if (closest != null && closest.getPredecessor() == null) {
+            closest.setMarker(new Marker(closest, 0));
+        }
         return closest;
     }
 
