@@ -38,9 +38,9 @@ public class DijkstraTest {
         int counter = vertexSet.size() - 2;
         for (Vertex vertex : vertexSet) {
             if (vertex.getName().equals("Norderstedt")) {
-                org.junit.Assert.assertEquals(3, vertex.getDistance());
+                org.junit.Assert.assertEquals(384, vertex.getDistance());
             } else if (vertex.getName().equals("Kiel")) {
-                org.junit.Assert.assertEquals(4, vertex.getDistance());
+                org.junit.Assert.assertEquals(432, vertex.getDistance());
             } else {
                 counter -= 1;
                 if (counter < 0) {
@@ -80,5 +80,44 @@ public class DijkstraTest {
                 org.junit.Assert.assertNull(vertex.getPredecessor());
             }
         }
+    }
+
+    @Test
+    public void debug() throws Exception {
+        GraphIO graphIO = new GraphIO();
+        URL url = getClass().getResource("/debug_graph.txt");
+        File file = new File(url.toURI());
+        Graph<Vertex, DefaultWeightedEdge> graph = graphIO.readGraphFromFile(file);
+        Vertex start = null;
+        Vertex target = null;
+
+        for (Vertex vertex : graph.vertexSet()) {
+            if (vertex.getName().equals("3")) {
+                start = vertex;
+            } else if (vertex.getName().equals("77")) {
+                target = vertex;
+            }
+        }
+        org.junit.Assert.assertNotNull(start);
+        org.junit.Assert.assertNotNull(target);
+
+        Dijkstra dijkstra1 = new Dijkstra(graph,start);
+        dijkstra1.run();
+
+        System.out.println("Djikstra Target distance:" + target.getMarker().getDistance());
+        printPath(start, target);
+
+    }
+
+    private void printPath(Vertex start, Vertex target) {
+        String path;
+        Vertex tmp;
+        path = target.getName();
+        tmp = target;
+        while (!start.equals(tmp)) {
+            tmp = tmp.getPredecessor();
+            path += " -> " + tmp.getName();
+        }
+        System.out.println("Path: " + path);
     }
 }

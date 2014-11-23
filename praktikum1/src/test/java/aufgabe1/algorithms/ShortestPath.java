@@ -10,6 +10,7 @@ import org.junit.Test;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by florian on 17.11.14.
@@ -38,7 +39,7 @@ public class ShortestPath {
         Dijkstra dijkstra = new Dijkstra(graph, startVertex);
         dijkstra.run();
         System.out.println("Dijkstra dereferences:" + dijkstra.getGraphDereferences());
-        printPath(startVertex,targetVertex);
+        printPath(startVertex, targetVertex);
 
         FloydWarshall floydWarshall = new FloydWarshall(graph);
         floydWarshall.run();
@@ -63,7 +64,7 @@ public class ShortestPath {
     public void test_3_3() {
         GraphGenerator graphGenerator = new GraphGenerator(6000, 100, true);
         graphGenerator.generate();
-        //graphGenerator.addShortestPath(Arrays.asList(new Vertex("1"), new Vertex("20")));
+        //graphGenerator.addShortestPath(Arrays.asList(new Vertex("3"), new Vertex("77")));
         WeightedGraph<Vertex, DefaultWeightedEdge> graph = graphGenerator.getGraph();
 
         Vertex start = null;
@@ -82,12 +83,20 @@ public class ShortestPath {
         Dijkstra dijkstra = new Dijkstra(graph, start);
         dijkstra.run();
         System.out.println("Djikstra Target distance:" + target.getMarker().getDistance());
-        printPath(start,target);
+        printPath(start, target);
 
-        FloydWarshall floydWarshall = new FloydWarshall(graph);
+        FloydWarshallNew floydWarshall = new FloydWarshallNew(graph);
         floydWarshall.run();
-        System.out.println("FloydWarshall Target distance:" + target.getMarker().getDistance());
-        printPath(start,target);
+        List<Vertex> path = floydWarshall.path(start, target);
+        System.out.println("fw: " + path + ", distance: " + floydWarshall.getPathLength());
+
+        if (path.size() != target.getDistance()) {
+            File file = new File("./graph_test_error.txt");
+            file.delete();
+            new GraphIO().saveGraphAsFile(graph, file);
+        }
+        //System.out.println("FloydWarshall Target distance:" + target.getMarker().getDistance());
+        //printPath(start,target);
 
     }
 }

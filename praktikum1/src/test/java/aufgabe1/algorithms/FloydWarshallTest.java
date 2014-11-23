@@ -1,13 +1,23 @@
 package aufgabe1.algorithms;
 
 import aufgabe1.Vertex;
+import aufgabe1.io.GraphIO;
 import junit.framework.TestCase;
+import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.DirectedWeightedPseudograph;
 import org.junit.Test;
 
+import java.io.File;
+import java.net.URL;
+import java.util.List;
+
 public class FloydWarshallTest extends TestCase {
 
+
+    {
+
+    }
 
     @Test
     public void testFloydWarshall() throws Exception {
@@ -35,6 +45,34 @@ public class FloydWarshallTest extends TestCase {
         FloydWarshall floydWarshall = new FloydWarshall(graph);
         floydWarshall.run();
 
+    }
+
+
+    @Test
+    public void testFWDebug() throws Exception {
+        GraphIO graphIO = new GraphIO();
+        URL url = getClass().getResource("/debug_graph3.txt");
+        File file = new File(url.toURI());
+        Graph<Vertex, DefaultWeightedEdge> graph = graphIO.readGraphFromFile(file);
+        Vertex start = null;
+        Vertex target = null;
+
+        for (Vertex vertex : graph.vertexSet()) {
+            if (vertex.getName().equals("3")) {
+                start = vertex;
+            } else if (vertex.getName().equals("77")) {
+                target = vertex;
+            }
+        }
+        org.junit.Assert.assertNotNull(start);
+        org.junit.Assert.assertNotNull(target);
+
+        FloydWarshallNew floydWarshallNew = new FloydWarshallNew(graph);
+        floydWarshallNew.run();
+
+        List<Vertex> path = floydWarshallNew.path(start, target);
+        System.out.println(path);
+        System.out.println(floydWarshallNew.getPathLength());
     }
 
 }

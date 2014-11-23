@@ -2,11 +2,13 @@ package aufgabe1.algorithms;
 
 import aufgabe1.Marker;
 import aufgabe1.Vertex;
+import aufgabe1.utils.GraphUtils;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by flbaue on 26.10.14.
@@ -39,20 +41,53 @@ public class Dijkstra {
             }
 
             // 2. check and update all distances to unvisited neighbors
-            updateUnvisitedNeighbors(vertex);
+            updateUnvisitedNeighborsNew(vertex);
         }
     }
 
-    private void updateUnvisitedNeighbors(Vertex vertex) {
+    private void updateUnvisitedNeighborsOld(Vertex vertex) {
         dereferences++;
         List<Vertex> neighbors = Graphs.neighborListOf(graph, vertex);
         for (Vertex neighbor : neighbors) {
             if (neighbor.isVisited()) {
                 continue;
             }
+            if (vertex.getName().equals("3") && neighbor.getName().equals("77") || vertex.getName().equals("77") && neighbor.getName().equals("3")) {
+                System.out.println("match");
+            }
             int edgeWeight = getEdgeWeight(vertex, neighbor);
             if (neighbor.getDistance() > vertex.getDistance() + edgeWeight) {
                 neighbor.setMarker(new Marker(vertex, vertex.getDistance() + edgeWeight));
+            }
+        }
+    }
+
+    private void updateUnvisitedNeighborsNew(Vertex vertex) {
+        dereferences++;
+        Set<DefaultWeightedEdge> edgeSet = graph.edgesOf(vertex);
+        for (DefaultWeightedEdge edge : edgeSet) {
+            dereferences++;
+            Vertex target = graph.getEdgeTarget(edge);
+            //filter cycles and wrong directions
+            if (target.equals(vertex)) {
+                if (GraphUtils.isDirectedGraph(graph)) {
+                    continue;
+                } else {
+                    target = graph.getEdgeSource(edge);
+                    if (target.equals(vertex)) {
+                        continue;
+                    }
+                }
+            }
+
+            //filter visited
+            if (target.isVisited()) {
+                continue;
+            }
+
+            int edgeWeight = (int) graph.getEdgeWeight(edge);
+            if (target.getDistance() > vertex.getDistance() + edgeWeight) {
+                target.setMarker(new Marker(vertex, vertex.getDistance() + edgeWeight));
             }
         }
     }

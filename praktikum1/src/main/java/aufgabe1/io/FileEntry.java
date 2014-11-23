@@ -11,7 +11,7 @@ class FileEntry {
     static final String NAME = "\\w+";
     static final String NUMBER = "\\d+";
     static final String NODE = NAME;
-    static final String EDGE = NAME;
+    static final String EDGE = "^" + NAME;
     static final String DIRECTED = "\\x2D\\x3E";
     static final String UNDIRECTED = "\\x2D\\x2D";
     static final String NODE2 = "((" + UNDIRECTED + ")|(" + DIRECTED + "))" + NAME;
@@ -73,7 +73,8 @@ class FileEntry {
             lineEdited = lineEdited.substring(node2NameMatcher.end());
         }
 
-        Matcher edgeNameMatcher = namePattern.matcher(lineEdited);
+        Pattern edgePattern = Pattern.compile(EDGE);
+        Matcher edgeNameMatcher = edgePattern.matcher(lineEdited);
         if (edgeNameMatcher.find()) {
             edgeName = edgeNameMatcher.group();
             lineEdited = lineEdited.substring(edgeNameMatcher.end());
