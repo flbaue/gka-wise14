@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FloydWarshallTest extends TestCase {
@@ -44,6 +46,8 @@ public class FloydWarshallTest extends TestCase {
 
         FloydWarshall floydWarshall = new FloydWarshall(graph);
         floydWarshall.run();
+        assertEquals(Arrays.asList(a, c, e, d), floydWarshall.getPath(a, d));
+        assertEquals(9d, floydWarshall.getShortestPathWeight(a, d));
 
     }
 
