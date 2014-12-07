@@ -52,4 +52,24 @@ public class GraphUtilsTest {
             }
         }
     }
+
+    @Test
+    public void testConvertToNetwork() throws Exception {
+        GraphIO graphIO = new GraphIO();
+        URL url = getClass().getResource("/graph4.gka.txt");
+        File file = new File(url.toURI());
+        Graph<Vertex, DefaultWeightedEdge> g = graphIO.readGraphFromFile(file);
+
+        Network<Vertex, NetworkEdge> network = GraphUtils.convertToNetwork(g);
+
+        for(DefaultWeightedEdge edge : g.edgeSet()){
+            Vertex source = g.getEdgeSource(edge);
+            Vertex target = g.getEdgeTarget(edge);
+
+            Assert.assertEquals(g.getEdgeWeight(edge), network.getEdge(source, target).getCapacity(), 0);
+            Assert.assertEquals(0, network.getEdge(source, target).getFlow(), 0);
+        }
+
+
+    }
 }

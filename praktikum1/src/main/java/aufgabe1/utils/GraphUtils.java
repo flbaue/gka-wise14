@@ -29,4 +29,11 @@ public final class GraphUtils {
             v.removeMarker();
         }
     }
+
+    public static Network<Vertex, NetworkEdge> convertToNetwork(Graph<Vertex, DefaultWeightedEdge> graph) {
+        Network<Vertex, NetworkEdge> network = new Network();
+        graph.vertexSet().forEach(vertex -> network.addVertex(vertex));
+        graph.edgeSet().forEach(e -> network.addEdge(graph.getEdgeSource(e), graph.getEdgeTarget(e)).setCapacity(graph.getEdgeWeight(e)));
+        return network;
+    }
 }
