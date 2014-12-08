@@ -1,11 +1,11 @@
 package aufgabe1.utils;
 
-import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 /**
  * Created by schlegel11 on 07.12.14.
  */
-public class NetworkEdge extends DefaultEdge {
+public class NetworkEdge extends DefaultWeightedEdge {
     private double capacity;
     private double flow;
 

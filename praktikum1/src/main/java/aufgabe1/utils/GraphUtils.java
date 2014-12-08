@@ -5,6 +5,7 @@ import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.DirectedWeightedPseudograph;
 
 import java.util.Objects;
 
@@ -35,5 +36,12 @@ public final class GraphUtils {
         graph.vertexSet().forEach(vertex -> network.addVertex(vertex));
         graph.edgeSet().forEach(edge -> network.addEdge(graph.getEdgeSource(edge), graph.getEdgeTarget(edge)).setCapacity(graph.getEdgeWeight(edge)));
         return network;
+    }
+
+    public static Graph<Vertex, DefaultWeightedEdge> convertToGraph(Network<Vertex, NetworkEdge> network){
+        DirectedWeightedPseudograph<Vertex, DefaultWeightedEdge> graph = new DirectedWeightedPseudograph(DefaultWeightedEdge.class);
+        network.vertexSet().forEach(vertex -> graph.addVertex(vertex));
+        network.edgeSet().forEach(edge -> graph.setEdgeWeight(graph.addEdge(network.getEdgeSource(edge), network.getEdgeTarget(edge)), edge.getCapacity()));
+        return graph;
     }
 }
