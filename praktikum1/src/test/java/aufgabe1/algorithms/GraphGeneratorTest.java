@@ -36,7 +36,7 @@ public class GraphGeneratorTest extends TestCase {
     @Test
     public void testGenerateNetwork() throws Exception {
 
-        GraphGenerator graphGenerator = new GraphGenerator(10, 5, true);
+        GraphGenerator graphGenerator = new GraphGenerator(800, 50, true);
         graphGenerator.generate();
         DirectedWeightedPseudograph<Vertex, DefaultWeightedEdge> graph = (DirectedWeightedPseudograph<Vertex, DefaultWeightedEdge>) graphGenerator.getGraph();
         Vertex[] vertexes = graphGenerator.convertGraphToNetwork(graph);

@@ -70,7 +70,7 @@ public class EdmondsKarp {
         Path path = findShortestPath();
         while (path != null) {
             //flood path with min path capacity
-            floodPath(path);
+            augmentPath(path);
 
             //find next shortest path
             path = findShortestPath();
@@ -85,7 +85,7 @@ public class EdmondsKarp {
         return maxFlow;
     }
 
-    private void floodPath(Path path) {
+    private void augmentPath(Path path) {
         for (Arc arc : path.arcs) {
             arc.capacity -= path.minCapacity;
             arc.flow += path.minCapacity;
@@ -218,7 +218,6 @@ public class EdmondsKarp {
     }
 
     class Path {
-        LinkedList<Node> nodes = new LinkedList();
         LinkedList<Arc> arcs = new LinkedList<>();
         int minCapacity = 0;
     }
