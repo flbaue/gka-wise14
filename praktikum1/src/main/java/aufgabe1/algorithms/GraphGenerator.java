@@ -59,6 +59,25 @@ public class GraphGenerator {
         return graph;
     }
 
+    public Vertex[] convertGraphToNetwork(DirectedWeightedPseudograph<Vertex,DefaultWeightedEdge> graph){
+        Vertex source = new Vertex("generatedNetworkSource");
+        Vertex terminal = new Vertex("generatedNetworkTerminal");
+        Random random = new Random();
+        int s = random.nextInt(graph.vertexSet().size());
+        int t = random.nextInt(graph.vertexSet().size());
+        List<Vertex> vertexList = new ArrayList<>(graph.vertexSet());
+
+        Vertex dSource = vertexList.get(s);
+        Vertex dTerminal = vertexList.get(t);
+
+        graph.addVertex(source);
+        graph.addVertex(terminal);
+        graph.setEdgeWeight(graph.addEdge(source, dSource), Double.POSITIVE_INFINITY);
+        graph.setEdgeWeight(graph.addEdge(dTerminal, terminal), Double.POSITIVE_INFINITY);
+
+        return new Vertex[]{source,terminal};
+    }
+
     private void createGraph() {
         graph = isDirected() ? new DirectedWeightedPseudograph<>(DefaultWeightedEdge.class) : new WeightedPseudograph<>(DefaultWeightedEdge.class);
     }
