@@ -10,8 +10,6 @@ import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class FloydWarshallTest extends TestCase {
@@ -29,25 +27,25 @@ public class FloydWarshallTest extends TestCase {
         Vertex b = new Vertex("B");
         Vertex c = new Vertex("C");
         Vertex d = new Vertex("D");
-        Vertex e = new Vertex("E");
 
         graph.addVertex(a);
         graph.addVertex(b);
         graph.addVertex(c);
         graph.addVertex(d);
-        graph.addVertex(e);
 
-        graph.setEdgeWeight(graph.addEdge(a, b), 2);
-        graph.setEdgeWeight(graph.addEdge(a, c), 3);
-        graph.setEdgeWeight(graph.addEdge(b, d), 9);
-        graph.setEdgeWeight(graph.addEdge(c, b), 7);
-        graph.setEdgeWeight(graph.addEdge(c, e), 5);
-        graph.setEdgeWeight(graph.addEdge(e, d), 1);
+        graph.setEdgeWeight(graph.addEdge(a, b), 1);
+        graph.setEdgeWeight(graph.addEdge(a, c), 4);
+        graph.setEdgeWeight(graph.addEdge(b, d), 1);
+        graph.setEdgeWeight(graph.addEdge(c, d), -3);
 
-        FloydWarshall floydWarshall = new FloydWarshall(graph);
+        FloydWarshallNew floydWarshall = new FloydWarshallNew(graph);
         floydWarshall.run();
-        assertEquals(Arrays.asList(a, c, e, d), floydWarshall.getPath(a, d));
-        assertEquals(9d, floydWarshall.getShortestPathWeight(a, d));
+        floydWarshall.path(a,d);
+        System.out.println(floydWarshall.getPathLength());
+
+        Dijkstra dijkstra = new Dijkstra(graph,a);
+        dijkstra.run();
+        System.out.println(d.getDistance());
 
     }
 
@@ -77,6 +75,7 @@ public class FloydWarshallTest extends TestCase {
         List<Vertex> path = floydWarshallNew.path(start, target);
         System.out.println(path);
         System.out.println(floydWarshallNew.getPathLength());
+        org.junit.Assert.assertEquals(26,floydWarshallNew.getPathLength(), 0.01);
     }
 
 }

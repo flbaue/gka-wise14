@@ -101,11 +101,13 @@ public class DijkstraTest {
         org.junit.Assert.assertNotNull(start);
         org.junit.Assert.assertNotNull(target);
 
-        Dijkstra dijkstra1 = new Dijkstra(graph,start);
+        Dijkstra dijkstra1 = new Dijkstra(graph, start);
         dijkstra1.run();
 
         System.out.println("Djikstra Target distance:" + target.getMarker().getDistance());
         printPath(start, target);
+
+        org.junit.Assert.assertEquals(1, target.getDistance());
 
     }
 

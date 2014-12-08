@@ -73,6 +73,8 @@ public class FloydWarshallNew {
             for (int i = 0; i < vertexCount; i++) {
                 for (int j = 0; j < vertexCount; j++) {
                     double transitDistance = distanceMatrix[i][k] + distanceMatrix[k][j];
+                    //if(vertexList.get())
+
                     if (distanceMatrix[i][j] > transitDistance) {
                         distanceMatrix[i][j] = transitDistance;
                         next[i][j] = next[i][k];

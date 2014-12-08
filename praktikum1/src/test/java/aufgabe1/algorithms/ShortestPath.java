@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,11 +39,13 @@ public class ShortestPath {
         dijkstra.run();
         System.out.println("Dijkstra dereferences:" + dijkstra.getGraphDereferences());
         printPath(startVertex, targetVertex);
+        org.junit.Assert.assertEquals(384, targetVertex.getDistance());
 
-        FloydWarshall floydWarshall = new FloydWarshall(graph);
+        FloydWarshallNew floydWarshall = new FloydWarshallNew(graph);
         floydWarshall.run();
-        System.out.println("FloydWarshall dereferences:" + floydWarshall.getGraphDereferences());
-        printPath(startVertex, targetVertex);
+        //System.out.println("FloydWarshall dereferences:" + floydWarshall.getGraphDereferences());
+        System.out.println(floydWarshall.path(startVertex, targetVertex));
+        org.junit.Assert.assertEquals(384, floydWarshall.getPathLength(), 0.01);
 
     }
 

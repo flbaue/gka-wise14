@@ -1,0 +1,9 @@
+Team: <Teamnummer>, <Namen der Teammitglieder>
+Aufgabenaufteilung: 
+1. <Aufgaben, für die Teammitglied 1 verantwortlich ist>, 
+<Dateien, die komplett/zum Teil von Teammitglied 1 implementiert/bearbeitet wurden>
+2. <Aufgaben, für die Teammitglied 2 verantwortlich ist>, 
+<Dateien, die komplett/zum Teil von Teammitglied 2 implementiert/bearbeitet wurden>
+Quellenangaben: <Angabe von wesentlichen Quellen, z.B. Web-Seiten/Bücher, von denen Quellcode/Algorithmen übernommen wurden>,<Namentliche Nennung von Studierenden der HAW, von denen Quellcode übernommen wurde>
+Bearbeitungszeitraum: <Datum und Dauer der Bearbeitung an der Aufgabe von allen Teammitgliedern>, <Angabe der gemeinsamen Bearbeitungszeiten>
+Aktueller Stand: <Welche Teile der Software sind fertig inklusive Tests, welche sind fertig, aber noch nicht getestet, welche müssen noch implementiert werden>
