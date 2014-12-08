@@ -17,7 +17,8 @@ public class EdmondsKarp {
     private Node sourceNode;
     private Node terminalNode;
     private List<Node> nodes;
-    private Map<Vertex, Node> vertexNodeMap;
+    private long startTime;
+    private long endTime;
 
     public EdmondsKarp(DirectedGraph<Vertex, DefaultWeightedEdge> graph, Vertex source, Vertex terminal) {
         this.graph = graph;
@@ -29,7 +30,7 @@ public class EdmondsKarp {
 
     private void setup() {
         nodes = new ArrayList<>(graph.vertexSet().size());
-        vertexNodeMap = new HashMap<>(graph.vertexSet().size());
+        Map<Vertex, Node> vertexNodeMap = new HashMap<>(graph.vertexSet().size());
 
         for (Vertex vertex : graph.vertexSet()) {
             Node node = new Node(vertex);
@@ -48,12 +49,23 @@ public class EdmondsKarp {
             for (DefaultWeightedEdge e : graph.outgoingEdgesOf(v)) {
                 Vertex target = graph.getEdgeTarget(e);
                 Node targetNode = vertexNodeMap.get(target);
-                node.arcs.add(new Arc(node, targetNode, (int) graph.getEdgeWeight(e)));
+                Arc arc = new Arc(node, targetNode, (int) graph.getEdgeWeight(e));
+                if (!node.arcs.contains(arc)) {
+                    node.arcs.add(arc);
+                } else {
+                    for (Arc oArc : node.arcs) {
+                        if (oArc.equals(arc)) {
+                            oArc.capacity += arc.capacity;
+                        }
+                    }
+                }
+
             }
         }
     }
 
     public int findMaxFlow() {
+        startTime = System.currentTimeMillis();
 
         Path path = findShortestPath();
         while (path != null) {
@@ -69,6 +81,7 @@ public class EdmondsKarp {
             maxFlow += arc.flow;
         }
 
+        endTime = System.currentTimeMillis();
         return maxFlow;
     }
 
@@ -123,6 +136,10 @@ public class EdmondsKarp {
         return path;
     }
 
+    public long getRuntimeMillis() {
+        return endTime - startTime;
+    }
+
     private void cleanNodes() {
         for (Node node : nodes) {
             node.predecessor = null;
@@ -133,7 +150,7 @@ public class EdmondsKarp {
 
     class Node {
         final Vertex prototype;
-        List<Arc> arcs = new LinkedList<>();
+        Set<Arc> arcs = new HashSet<>();
         boolean visited = false;
         Node predecessor = null;
 
@@ -148,6 +165,23 @@ public class EdmondsKarp {
             }
             throw new RuntimeException("No arc to given terminal");
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Node node = (Node) o;
+
+            if (!prototype.equals(node.prototype)) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return prototype.hashCode();
+        }
     }
 
     class Arc {
@@ -160,6 +194,26 @@ public class EdmondsKarp {
             this.source = source;
             this.terminal = terminal;
             this.capacity = capacity;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Arc arc = (Arc) o;
+
+            if (!source.equals(arc.source)) return false;
+            if (!terminal.equals(arc.terminal)) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = source.hashCode();
+            result = 31 * result + terminal.hashCode();
+            return result;
         }
     }
 
