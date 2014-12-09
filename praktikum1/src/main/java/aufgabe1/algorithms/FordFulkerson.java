@@ -21,10 +21,9 @@ import java.util.stream.Collectors;
 public class FordFulkerson {
     private final Network<Vertex, NetworkEdge> network;
     private DirectedWeightedPseudograph<Vertex, DefaultWeightedEdge> residualGraph;
-    private double[][] graphMatrix;
-    private List<Vertex> vertices;
-    private Vertex source;
-    private Vertex sink;
+    private int maxFlow;
+    private long startTime;
+    private long endTime;
 
     public FordFulkerson(Graph<Vertex, DefaultWeightedEdge> graph) {
         network = GraphUtils.convertToNetwork(graph);
@@ -35,17 +34,36 @@ public class FordFulkerson {
     }
 
     public void run(Vertex source, Vertex sink) {
+        startTime = System.currentTimeMillis();
+
         residualGraph = (DirectedWeightedPseudograph<Vertex, DefaultWeightedEdge>) GraphUtils.convertToGraph(network);
         source.setMarker(new Marker(null, Integer.MAX_VALUE));
-        BreadthFirstSearch bfs = new BreadthFirstSearch(residualGraph, source);
+        BreadthFirstSearch bfs;
 
-        for (Vertex vertex : bfs) {
+        boolean foundPath;
+        do {
+            foundPath = false;
+            bfs = new BreadthFirstSearch(residualGraph, source);
+            for (Vertex vertex : bfs) {
                 if (vertex.equals(sink)) {
                     double minFlow = findMinimumCapacity(vertex);
                     updateNetworkFlow(vertex, minFlow);
                     updateResidualFlow(vertex, minFlow);
+                    foundPath = true;
+                    maxFlow += minFlow;
                 }
-        }
+            }
+        } while (foundPath);
+
+        endTime = System.currentTimeMillis();
+    }
+
+    public int getMaxFlow() {
+        return maxFlow;
+    }
+
+    public long getRuntimeMillis() {
+        return endTime - startTime;
     }
 
     private double findMinimumCapacity(Vertex vertex) {
@@ -59,8 +77,8 @@ public class FordFulkerson {
         return minCapacity;
     }
 
-    private void updateNetworkFlow(Vertex vertex, double flowValue){
-        for(Vertex elem : vertex.getThisAndPredecessors()){
+    private void updateNetworkFlow(Vertex vertex, double flowValue) {
+        for (Vertex elem : vertex.getThisAndPredecessors()) {
             Vertex predecessor = elem.getPredecessor();
             if (!predecessor.equals(elem)) {
                 NetworkEdge edge = network.getEdge(predecessor, elem);
@@ -74,17 +92,18 @@ public class FordFulkerson {
             Vertex predecessor = elem.getPredecessor();
             if (!predecessor.equals(elem)) {
                 DefaultWeightedEdge backEdge = residualGraph.getEdge(elem, predecessor);
+                double edgeWeight = residualGraph.getEdgeWeight(residualGraph.getEdge(predecessor, elem));
 
-                if(Objects.nonNull(backEdge)){
-                    double edgeWeight = residualGraph.getEdgeWeight(residualGraph.getEdge(elem, predecessor));
-                    residualGraph.setEdgeWeight(residualGraph.getEdge(predecessor, elem), edgeWeight + flowValue);
+                if ((edgeWeight - flowValue) <= 0) {
+                    residualGraph.removeEdge(residualGraph.getEdge(predecessor, elem));
+                } else {
+                    residualGraph.setEdgeWeight(residualGraph.getEdge(predecessor, elem), edgeWeight - flowValue);
+                }
 
-                }else{
-                    double edgeWeight = residualGraph.getEdgeWeight(residualGraph.getEdge(predecessor, elem));
-                    if(edgeWeight != flowValue){
-                        residualGraph.setEdgeWeight(residualGraph.getEdge(predecessor, elem), edgeWeight - flowValue);
-                        residualGraph.setEdgeWeight(residualGraph.addEdge(elem, predecessor), flowValue);
-                    }
+                if (Objects.nonNull(backEdge)) {
+                    residualGraph.setEdgeWeight(backEdge, edgeWeight + flowValue);
+                } else {
+                    residualGraph.setEdgeWeight(residualGraph.addEdge(elem, predecessor), flowValue);
                 }
             }
         }
