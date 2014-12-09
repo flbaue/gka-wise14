@@ -15,11 +15,11 @@ public class Network<V, E extends NetworkEdge> extends DirectedWeightedPseudogra
         super(edgeClass);
     }
 
-    public double getEdgeCapacity(E edge){
+    public int getEdgeCapacity(E edge){
         return edge.getCapacity();
     }
 
-    public double getEdgeFlow(E edge){
+    public int getEdgeFlow(E edge){
         return edge.getFlow();
     }
 }
