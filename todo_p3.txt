@@ -3,4 +3,4 @@ Nacharbeit zu Aufgabe 3
 Erledigt - Ford: daten typen und vergleiche von double
 	 - Floyd: test ausbauen
 	 - Doku erstellen
-	 - Ford: null pointer exception wenn kein pfad existiert
+Erledigt - Ford: null pointer exception wenn kein pfad existiert
