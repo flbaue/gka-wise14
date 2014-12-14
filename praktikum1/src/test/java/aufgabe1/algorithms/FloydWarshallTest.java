@@ -6,18 +6,15 @@ import junit.framework.TestCase;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.DirectedWeightedPseudograph;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 
 public class FloydWarshallTest extends TestCase {
-
-
-    {
-
-    }
 
     @Test
     public void testFloydWarshall() throws Exception {
@@ -38,15 +35,26 @@ public class FloydWarshallTest extends TestCase {
         graph.setEdgeWeight(graph.addEdge(b, d), 1);
         graph.setEdgeWeight(graph.addEdge(c, d), -3);
 
-        FloydWarshallNew floydWarshall = new FloydWarshallNew(graph);
+        FloydWarshall floydWarshall = new FloydWarshall(graph);
         floydWarshall.run();
-        floydWarshall.path(a,d);
-        System.out.println(floydWarshall.getPathLength());
 
-        Dijkstra dijkstra = new Dijkstra(graph,a);
-        dijkstra.run();
-        System.out.println(d.getDistance());
+        Assert.assertEquals(1, floydWarshall.getShortestPathWeight(a,d));
+    }
 
+    @Test
+    public void testFloydWarshallBigGraph() throws Exception {
+        GraphGenerator graphGenerator = new GraphGenerator(5000, 500, true);
+        graphGenerator.generate();
+
+        Vertex a = new Vertex("1");
+        Vertex b = new Vertex("2");
+        Vertex c = new Vertex("30");
+        Vertex d = new Vertex("375");
+        graphGenerator.addShortestPath(Arrays.asList(a, b, c, d));
+
+        FloydWarshall floydWarshall = new FloydWarshall(graphGenerator.getGraph());
+        floydWarshall.run();
+        Assert.assertEquals(3, floydWarshall.getShortestPathWeight(a,d));
     }
 
 
