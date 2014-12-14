@@ -35,10 +35,10 @@ public class FloydWarshall {
         dereferences = 0;
     }
 
-    public double getShortestPathWeight(Vertex source, Vertex target) {
-        double pathWeight = 0;
+    public int getShortestPathWeight(Vertex source, Vertex target) {
+        int pathWeight = 0;
         if (vertices.containsAll(Arrays.asList(source, target))) {
-            pathWeight = distanceMatrix[vertices.indexOf(source)][vertices.indexOf(target)];
+            pathWeight = (int) distanceMatrix[vertices.indexOf(source)][vertices.indexOf(target)];
         }
         return pathWeight;
     }
@@ -78,7 +78,7 @@ public class FloydWarshall {
             for (ListIterator<Vertex> targetItr = getAllTargets(sourceVertex).listIterator(); targetItr.hasNext(); ) {
                 Vertex targetVertex = targetItr.next();
                 int targetIndex = vertices.indexOf(targetVertex);
-                distanceMatrix[sourceIndex][targetIndex] = sourceVertex.equals(targetVertex) ? 0 : getEdgeWeight(sourceVertex, targetVertex);
+                distanceMatrix[sourceIndex][targetIndex] = sourceVertex.equals(targetVertex) ? 0 : getMinimalEdgeWeight(sourceVertex, targetVertex);
             }
         }
     }
@@ -113,10 +113,13 @@ public class FloydWarshall {
         return vertices;
     }
 
-    private int getEdgeWeight(Vertex source, Vertex target) {
+    private int getMinimalEdgeWeight(Vertex source, Vertex target) {
         dereferences++;
-        DefaultWeightedEdge e = graph.getEdge(source, target);
-        dereferences++;
-        return (int) graph.getEdgeWeight(e);
+        double minimalEdgeWeight = Double.POSITIVE_INFINITY;
+        for (DefaultWeightedEdge edge : graph.getAllEdges(source, target)) {
+            minimalEdgeWeight = Math.min(minimalEdgeWeight, graph.getEdgeWeight(edge));
+            dereferences++;
+        }
+        return (int) minimalEdgeWeight;
     }
 }
