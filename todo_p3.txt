@@ -1,6 +1,6 @@
 Nacharbeit zu Aufgabe 3
 	 - Edmonds&Karp: rückwärtskannten
 Erledigt - Ford: daten typen und vergleiche von double
-	 - Floyd: test ausbauen
+Erledigt - Floyd: test ausbauen
 	 - Doku erstellen
 Erledigt - Ford: null pointer exception wenn kein pfad existiert
