@@ -52,6 +52,48 @@ public class GraphGeneratorTest extends TestCase {
             graphIO.saveGraphAsFile(graph, new File("./graph_test_debug.txt"));
 
         assertTrue(maxFlow >= 0);
+
+//        graphIO.saveGraphAsFile(graph, new File("./BigNet_4_2.txt"));
+    }
+
+    @Test
+    public void testCompareRuntime() throws Exception {
+
+        for (int i = 0; i < 1; i++) {
+            System.out.println("Iteration " + i);
+
+            GraphGenerator graphGenerator = new GraphGenerator(300000, 2500, true);
+            graphGenerator.generate();
+            DirectedWeightedPseudograph<Vertex, DefaultWeightedEdge> graph = (DirectedWeightedPseudograph<Vertex, DefaultWeightedEdge>) graphGenerator.getGraph();
+            Vertex[] vertexes = graphGenerator.convertGraphToNetwork(graph);
+
+            assertNotNull(vertexes[0]);
+            assertNotNull(vertexes[1]);
+
+            EdmondsKarp edmondsKarp = new EdmondsKarp(graph, vertexes[0], vertexes[1]);
+            int maxFlow = edmondsKarp.findMaxFlow();
+            long edmondskarpRuntime = edmondsKarp.getRuntimeMillis();
+            System.out.println("Edmonds & Karp max flow:" + maxFlow);
+            System.out.println("Edmonds & Karp runtime:" + edmondskarpRuntime);
+
+            FordFulkerson fordFulkerson = new FordFulkerson(graph);
+            fordFulkerson.run(vertexes[0], vertexes[1]);
+
+            int maxFlow2 = fordFulkerson.getMaxFlow();
+            long fordFulkersonRuntime = fordFulkerson.getRuntimeMillis();
+            System.out.println("FordFulkerson max flow:" + maxFlow2);
+            System.out.println("FordFulkerson runtime:" + fordFulkersonRuntime);
+
+            org.junit.Assert.assertEquals(maxFlow, maxFlow2);
+
+        /*GraphIO graphIO = new GraphIO();
+        if (maxFlow <= 0 || maxFlow > 100)
+            graphIO.saveGraphAsFile(graph, new File("./graph_test_debug.txt"));
+
+        assertTrue(maxFlow >= 0);
+
+        graphIO.saveGraphAsFile(graph, new File("./BigNet_4_2.txt"));*/
+        }
     }
 
 //    @Test
