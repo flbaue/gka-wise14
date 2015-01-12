@@ -36,30 +36,46 @@ public class EdmondsKarp {
             Node node = new Node(vertex);
             nodes.add(node);
             vertexNodeMap.put(vertex, node);
-            if (vertex == source) {
+            if (vertex == source)
                 sourceNode = node;
-            }
-            if (vertex == terminal) {
+
+            if (vertex == terminal)
                 terminalNode = node;
-            }
         }
 
         for (Node node : nodes) {
             Vertex v = node.prototype;
+            //forward edges
             for (DefaultWeightedEdge e : graph.outgoingEdgesOf(v)) {
                 Vertex target = graph.getEdgeTarget(e);
                 Node targetNode = vertexNodeMap.get(target);
                 Arc arc = new Arc(node, targetNode, (int) graph.getEdgeWeight(e));
-                if (!node.arcs.contains(arc)) {
-                    node.arcs.add(arc);
-                } else {
-                    for (Arc oArc : node.arcs) {
-                        if (oArc.equals(arc)) {
-                            oArc.capacity += arc.capacity;
-                        }
-                    }
-                }
 
+                if (!node.arcs.contains(arc))
+                    node.arcs.add(arc);
+                else
+                    for (Arc oArc : node.arcs)
+                        if (oArc.equals(arc))
+                            oArc.capacity += arc.capacity;
+            }
+            //backward edges
+            for (DefaultWeightedEdge e : graph.incomingEdgesOf(v)) {
+                Vertex source = graph.getEdgeSource(e);
+                Node sourceNode = vertexNodeMap.get(source);
+                Arc arc = new Arc(sourceNode, node, (int) graph.getEdgeWeight(e));
+
+                if (!node.arcs.contains(arc))
+                    node.arcs.add(arc);
+                else
+                    for (Arc oArc : node.arcs)
+                        if (oArc.equals(arc))
+                            oArc.capacity += arc.capacity;
+
+                for (Arc a : node.arcs)
+                    if (arc.isReverse(a)) {
+                        arc.revArc = a;
+                        a.revArc = arc;
+                    }
             }
         }
     }
@@ -77,9 +93,8 @@ public class EdmondsKarp {
         }
 
         int maxFlow = 0;
-        for (Arc arc : sourceNode.arcs) {
+        for (Arc arc : sourceNode.arcs)
             maxFlow += arc.flow;
-        }
 
         endTime = System.currentTimeMillis();
         return maxFlow;
@@ -89,13 +104,15 @@ public class EdmondsKarp {
         for (Arc arc : path.arcs) {
             arc.capacity -= path.minCapacity;
             arc.flow += path.minCapacity;
+            if (arc.revArc == null)
+                arc.revArc = new Arc(arc.terminal, arc.source, path.minCapacity, arc);
+            else
+                arc.revArc.capacity += path.minCapacity;
         }
     }
 
     private Path findShortestPath() {
         // BFS
-
-        //TODO remove predecessors & visited;
         cleanNodes();
 
         Queue<Node> queue = new LinkedList<>();
@@ -107,7 +124,7 @@ public class EdmondsKarp {
         while (queue.size() > 0) {
             Node node = queue.poll();
 
-            for (Arc arc : node.arcs) {
+            for (Arc arc : node.arcs)
                 if (arc.terminal.visited == false && arc.capacity > 0) {
                     arc.terminal.predecessor = node;
                     arc.terminal.visited = true;
@@ -117,7 +134,6 @@ public class EdmondsKarp {
                         break;
                     }
                 }
-            }
         }
 
         if (terminalNode.predecessor == null) {
@@ -187,6 +203,7 @@ public class EdmondsKarp {
     class Arc {
         final Node source;
         final Node terminal;
+        Arc revArc;
         int capacity;
         int flow;
 
@@ -194,6 +211,14 @@ public class EdmondsKarp {
             this.source = source;
             this.terminal = terminal;
             this.capacity = capacity;
+            this.revArc = null;
+        }
+
+        public Arc(Node source, Node terminal, int capacity, Arc revArc) {
+            this.source = source;
+            this.terminal = terminal;
+            this.capacity = capacity;
+            this.revArc = revArc;
         }
 
         @Override
@@ -214,6 +239,13 @@ public class EdmondsKarp {
             int result = source.hashCode();
             result = 31 * result + terminal.hashCode();
             return result;
+        }
+
+        public boolean isReverse(Arc a) {
+            if (a.source == this.terminal && a.terminal == this.source)
+                return true;
+            else
+                return false;
         }
     }
 
